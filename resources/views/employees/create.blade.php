@@ -74,23 +74,15 @@
                                 class="peer w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 text-gray-900 dark:text-white focus:border-emerald-500 dark:focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 appearance-none"
                                 required>
                                 <option value=""> </option>
-                                <option value="Administrasi" {{ old('skill') == 'Administrasi' ? 'selected' : '' }}>
-                                    Administrasi</option>
-                                <option value="Akuntansi" {{ old('skill') == 'Akuntansi' ? 'selected' : '' }}>Akuntansi
+                                <option value="Teknisi Mekanik"
+                                    {{ old('skill') == 'Teknisi Mekanik' ? 'selected' : '' }}>Teknisi Mekanik</option>
+                                <option value="Teknisi Listrik"
+                                    {{ old('skill') == 'Teknisi Listrik' ? 'selected' : '' }}>Teknisi Listrik</option>
+                                <option value="Maintenance Gedung"
+                                    {{ old('skill') == 'Maintenance Gedung' ? 'selected' : '' }}>Maintenance Gedung
                                 </option>
-                                <option value="Gudang" {{ old('skill') == 'Gudang' ? 'selected' : '' }}>Gudang</option>
-                                <option value="Produksi" {{ old('skill') == 'Produksi' ? 'selected' : '' }}>Produksi
-                                </option>
-                                <option value="Pengemasan" {{ old('skill') == 'Pengemasan' ? 'selected' : '' }}>
-                                    Pengemasan</option>
-                                <option value="Quality Control"
-                                    {{ old('skill') == 'Quality Control' ? 'selected' : '' }}>Quality Control</option>
-                                <option value="Teknisi Mesin" {{ old('skill') == 'Teknisi Mesin' ? 'selected' : '' }}>
-                                    Teknisi Mesin</option>
-                                <option value="Supervisor" {{ old('skill') == 'Supervisor' ? 'selected' : '' }}>
-                                    Supervisor</option>
-                                <option value="Manajer" {{ old('skill') == 'Manajer' ? 'selected' : '' }}>Manajer
-                                </option>
+                                <option value="Teknisi IT" {{ old('skill') == 'Teknisi IT' ? 'selected' : '' }}>Teknisi
+                                    IT</option>
                                 <option value="Lainnya" {{ old('skill') == 'Lainnya' ? 'selected' : '' }}>Lainnya
                                 </option>
                             </select>

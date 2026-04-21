@@ -83,35 +83,20 @@
                                 class="peer w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 text-gray-900 dark:text-white focus:border-amber-500 dark:focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 appearance-none"
                                 required>
                                 <option value=""> </option>
-                                <option value="Administrasi"
-                                    {{ old('skill', $employee->skill) == 'Administrasi' ? 'selected' : '' }}>
-                                    Administrasi</option>
-                                <option value="Akuntansi"
-                                    {{ old('skill', $employee->skill) == 'Akuntansi' ? 'selected' : '' }}>Akuntansi
-                                </option>
-                                <option value="Gudang"
-                                    {{ old('skill', $employee->skill) == 'Gudang' ? 'selected' : '' }}>Gudang</option>
-                                <option value="Produksi"
-                                    {{ old('skill', $employee->skill) == 'Produksi' ? 'selected' : '' }}>Produksi
-                                </option>
-                                <option value="Pengemasan"
-                                    {{ old('skill', $employee->skill) == 'Pengemasan' ? 'selected' : '' }}>Pengemasan
-                                </option>
-                                <option value="Quality Control"
-                                    {{ old('skill', $employee->skill) == 'Quality Control' ? 'selected' : '' }}>Quality
-                                    Control</option>
-                                <option value="Teknisi Mesin"
-                                    {{ old('skill', $employee->skill) == 'Teknisi Mesin' ? 'selected' : '' }}>Teknisi
-                                    Mesin</option>
-                                <option value="Supervisor"
-                                    {{ old('skill', $employee->skill) == 'Supervisor' ? 'selected' : '' }}>Supervisor
-                                </option>
-                                <option value="Manajer"
-                                    {{ old('skill', $employee->skill) == 'Manajer' ? 'selected' : '' }}>Manajer
+                                <option value="Teknisi Mekanik"
+                                    {{ old('skill', $employee->skill) == 'Teknisi Mekanik' ? 'selected' : '' }}>Teknisi
+                                    Mekanik</option>
+                                <option value="Teknisi Listrik"
+                                    {{ old('skill', $employee->skill) == 'Teknisi Listrik' ? 'selected' : '' }}>Teknisi
+                                    Listrik</option>
+                                <option value="Maintenance Gedung"
+                                    {{ old('skill', $employee->skill) == 'Maintenance Gedung' ? 'selected' : '' }}>
+                                    Maintenance Gedung</option>
+                                <option value="Teknisi IT"
+                                    {{ old('skill', $employee->skill) == 'Teknisi IT' ? 'selected' : '' }}>Teknisi IT
                                 </option>
                                 <option value="Lainnya"
-                                    {{ old('skill', $employee->skill) == 'Lainnya' ? 'selected' : '' }}>Lainnya
-                                </option>
+                                    {{ old('skill', $employee->skill) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                             <label for="skillSelect"
                                 class="absolute left-4 -top-2.5 bg-white dark:bg-gray-800 px-1 text-sm text-gray-600 dark:text-gray-400 transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-placeholder-shown:left-4 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-amber-600 dark:peer-focus:text-amber-400">
@@ -120,6 +105,10 @@
                             <div class="absolute right-3 top-3.5 pointer-events-none text-gray-400">
                                 <i class="bi bi-chevron-down"></i>
                             </div>
+                            @error('skill')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"><i
+                                        class="bi bi-exclamation-circle"></i>{{ $message }}</p>
+                            @enderror
                         </div>
 
                         {{-- No Telepon dengan format otomatis --}}
