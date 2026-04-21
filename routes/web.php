@@ -23,4 +23,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('employees', EmployeeController::class);
 });
 
+use App\Http\Controllers\ReportController;
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // ... rute employees sebelumnya ...
+    Route::resource('reports', ReportController::class);
+});
+
+use App\Http\Controllers\TaskController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('tasks', TaskController::class);
+});
 require __DIR__ . '/auth.php';
