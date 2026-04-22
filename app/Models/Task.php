@@ -21,7 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'instructions',
     'deadline',
     'materials_needed',
-    'additional_info'
+    'additional_info',
+    'completed_at',
 ])]
 class Task extends Model
 {

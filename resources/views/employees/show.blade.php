@@ -72,39 +72,73 @@
                         $tasks = $employee->tasks;
 
                         $totalTasks = $tasks->count();
-                        $tasksToday = $tasks->where('deadline', '>=', $today)->count();
+                        $tasksToday = $tasks
+                            ->filter(function ($task) use ($today) {
+                                return $task->deadline && \Carbon\Carbon::parse($task->deadline)->gte($today);
+                            })
+                            ->count();
                         $tasksPending = $tasks->where('status', 'processed')->count();
                         $tasksInProgress = $tasks->where('status', 'worked_on')->count();
                         $tasksCompletedThisWeek = $tasks
-                            ->where('status', 'finished')
-                            ->whereBetween('completed_at', [$startOfWeek, $endOfWeek])
+                            ->filter(function ($task) use ($startOfWeek, $endOfWeek) {
+                                return $task->status === 'finished' &&
+                                    $task->completed_at &&
+                                    \Carbon\Carbon::parse($task->completed_at)->between($startOfWeek, $endOfWeek);
+                            })
+                            ->count();
+
+                        $tasksCompletedToday = $tasks
+                            ->filter(function ($task) use ($today) {
+                                return $task->status === 'finished' &&
+                                    $task->completed_at &&
+                                    \Carbon\Carbon::parse($task->completed_at)->isSameDay($today);
+                            })
                             ->count();
                     @endphp
 
+                    <!-- Card Total Tugas -->
                     <div class="bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-4">
                         <div class="text-sm text-indigo-600 dark:text-indigo-300 font-medium">Total Tugas</div>
                         <div class="text-3xl font-bold text-indigo-700 dark:text-indigo-200 mt-1">{{ $totalTasks }}
                         </div>
                     </div>
+
+                    <!-- Card Deadline Hari Ini -->
                     <div class="bg-amber-50 dark:bg-amber-900/30 rounded-xl p-4">
                         <div class="text-sm text-amber-600 dark:text-amber-300 font-medium">Pekerjaan Deadline Hari Ini
                         </div>
                         <div class="text-3xl font-bold text-amber-700 dark:text-amber-200 mt-1">{{ $tasksToday }}
                         </div>
                     </div>
+
+                    <!-- Card Belum Dikerjakan -->
                     <div class="bg-red-50 dark:bg-red-900/30 rounded-xl p-4">
                         <div class="text-sm text-red-600 dark:text-red-300 font-medium">Belum Dikerjakan</div>
                         <div class="text-3xl font-bold text-red-700 dark:text-red-200 mt-1">{{ $tasksPending }}</div>
                     </div>
+
+                    <!-- Card Proses Pengerjaan -->
                     <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-4">
                         <div class="text-sm text-yellow-600 dark:text-yellow-300 font-medium">Proses Pengerjaan</div>
                         <div class="text-3xl font-bold text-yellow-700 dark:text-yellow-200 mt-1">
                             {{ $tasksInProgress }}</div>
                     </div>
+
+                    <!-- Card Selesai Minggu Ini -->
                     <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-4 col-span-2">
                         <div class="text-sm text-green-600 dark:text-green-300 font-medium">Selesai Minggu Ini</div>
                         <div class="text-3xl font-bold text-green-700 dark:text-green-200 mt-1">
                             {{ $tasksCompletedThisWeek }}</div>
+                    </div>
+                </div>
+
+                <!-- Baris baru untuk Selesai Hari Ini -->
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-4 col-span-2">
+                        <div class="text-sm text-emerald-600 dark:text-emerald-300 font-medium">✅ Selesai Hari Ini</div>
+                        <div class="text-3xl font-bold text-emerald-700 dark:text-emerald-200 mt-1">
+                            {{ $tasksCompletedToday }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -133,19 +167,29 @@
                                         <td class="px-4 py-3">{{ $task->damaged_tool }}</td>
                                         <td class="px-4 py-3">
                                             @php
+                                                $statusText = match ($task->status) {
+                                                    'unprocessed' => 'Belum Diproses',
+                                                    'processed' => 'Belum Dikerjakan',
+                                                    'worked_on' => 'Sedang Dikerjakan',
+                                                    'finished' => 'Sudah Selesai Dikerjakan',
+                                                    default => ucfirst(str_replace('_', ' ', $task->status)),
+                                                };
+
                                                 $statusColor = match ($task->status) {
-                                                    'pending'
+                                                    'unprocessed'
                                                         => 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
-                                                    'in_progress'
+                                                    'processed'
                                                         => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
-                                                    'completed'
+                                                    'worked_on'
+                                                        => 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+                                                    'finished'
                                                         => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
                                                     default => 'bg-gray-100 text-gray-800',
                                                 };
                                             @endphp
                                             <span
                                                 class="px-2 py-1 rounded-full text-xs font-medium {{ $statusColor }}">
-                                                {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                                {{ $statusText }}
                                             </span>
                                         </td>
                                         <td class="px-4 py-3">{{ $task->deadline }}</td>

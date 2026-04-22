@@ -28,7 +28,7 @@
                         <div class="flex flex-wrap gap-3 text-white/90 text-sm">
                             <div class="flex items-center gap-1 bg-black/20 px-3 py-1 rounded-full">
                                 <i class="bi bi-calendar"></i>
-                                <span>Dibuat: {{ $task->created_at->translatedFormat('d M Y, H:i') }}</span>
+                                {{-- <span>Dibuat: {{ $task->created_at->translatedFormat('d M Y, H:i') }}</span> --}}
                             </div>
                         </div>
                     </div>
@@ -127,6 +127,16 @@
                             {{ $task->deadline ? \Carbon\Carbon::parse($task->deadline)->translatedFormat('d M Y, H:i') : '-' }}
                         </p>
                     </div>
+                    @if ($task->completed_at)
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Selesai</label>
+                            <p class="text-gray-700 dark:text-gray-300 flex items-center gap-1">
+                                <i class="bi bi-check-circle text-green-500"></i>
+                                {{ \Carbon\Carbon::parse($task->completed_at)->translatedFormat('d M Y, H:i') }}
+                            </p>
+                        </div>
+                    @endif
                     <div>
                         <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">PIC /
                             Mekanik</label>
@@ -250,7 +260,7 @@
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Informasi
                         Lainnya</label>
-                    <p class="text-gray-700 dark:text-gray-300">{{ $task->additional_info ?? '-' }}</p>
+                    {{-- <p class="text-gray-700 dark:text-gray-300">{{ $task->additional_info ?? '-' }}</p> --}}
                 </div>
             </div>
         </div>
