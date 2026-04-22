@@ -225,6 +225,13 @@ class TaskController extends Controller
 
     private function sendTelegramNotification(Task $task)
     {
+        $chatId = $task->telegram_user_id;
+        if (empty($chatId)) {
+            // Bisa gunakan Log::info atau debug saja, karena ini kondisi normal jika user tidak punya Telegram
+            Log::info("Telegram notification skipped: No chat ID for task {$task->id}");
+            return;
+        }
+
         $botToken = env('TELEGRAM_BOT_TOKEN');
         Log::info('sendTelegramNotification called', ['token' => $botToken ? 'ada' : 'tidak ada']);
         if (!$botToken) {
