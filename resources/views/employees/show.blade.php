@@ -1,3 +1,4 @@
+{{-- resources/views/employees/show.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
         <div class="relative overflow-hidden rounded-2xl shadow-2xl">
@@ -23,6 +24,93 @@
     </x-slot>
 
     <div class="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        {{-- Detail Lengkap Karyawan --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="bi bi-person-vcard text-indigo-500 text-xl"></i> Informasi Pekerja
+                </h3>
+                <dl class="space-y-3">
+                    <div class="flex items-center border-b border-gray-200 dark:border-gray-700 pb-2">
+                        <dt class="w-32 text-gray-500 dark:text-gray-400 text-sm font-medium"><i
+                                class="bi bi-person mr-1"></i> Nama</dt>
+                        <dd class="flex-1 text-gray-900 dark:text-white font-medium">{{ $employee->name }}</dd>
+                    </div>
+                    <div class="flex items-center border-b border-gray-200 dark:border-gray-700 pb-2">
+                        <dt class="w-32 text-gray-500 dark:text-gray-400 text-sm font-medium"><i
+                                class="bi bi-tools mr-1"></i> Skill</dt>
+                        <dd class="flex-1 text-gray-900 dark:text-white font-medium">{{ $employee->skill }}</dd>
+                    </div>
+                    <div class="flex items-center border-b border-gray-200 dark:border-gray-700 pb-2">
+                        <dt class="w-32 text-gray-500 dark:text-gray-400 text-sm font-medium"><i
+                                class="bi bi-telephone mr-1"></i> Telepon</dt>
+                        <dd class="flex-1 text-gray-900 dark:text-white">
+                            {{ $employee->phone_number ?? '—' }}
+                        </dd>
+                    </div>
+                    <div class="flex items-center">
+                        <dt class="w-32 text-gray-500 dark:text-gray-400 text-sm font-medium"><i
+                                class="bi bi-telegram mr-1"></i> Telegram</dt>
+                        <dd class="flex-1 text-gray-900 dark:text-white">
+                            {{ $employee->telegram_username ? '@' . $employee->telegram_username : '—' }}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+
+            {{-- Statistik Tugas --}}
+            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                    <i class="bi bi-bar-chart-steps text-indigo-500 text-xl"></i> Ringkasan Tugas
+                </h3>
+                <div class="grid grid-cols-2 gap-4">
+                    @php
+                        $today = \Carbon\Carbon::today();
+                        $startOfWeek = \Carbon\Carbon::now()->startOfWeek();
+                        $endOfWeek = \Carbon\Carbon::now()->endOfWeek();
+
+                        $tasks = $employee->tasks;
+
+                        $totalTasks = $tasks->count();
+                        $tasksToday = $tasks->where('deadline', '>=', $today)->count();
+                        $tasksPending = $tasks->where('status', 'processed')->count();
+                        $tasksInProgress = $tasks->where('status', 'worked_on')->count();
+                        $tasksCompletedThisWeek = $tasks
+                            ->where('status', 'finished')
+                            ->whereBetween('completed_at', [$startOfWeek, $endOfWeek])
+                            ->count();
+                    @endphp
+
+                    <div class="bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-4">
+                        <div class="text-sm text-indigo-600 dark:text-indigo-300 font-medium">Total Tugas</div>
+                        <div class="text-3xl font-bold text-indigo-700 dark:text-indigo-200 mt-1">{{ $totalTasks }}
+                        </div>
+                    </div>
+                    <div class="bg-amber-50 dark:bg-amber-900/30 rounded-xl p-4">
+                        <div class="text-sm text-amber-600 dark:text-amber-300 font-medium">Pekerjaan Deadline Hari Ini
+                        </div>
+                        <div class="text-3xl font-bold text-amber-700 dark:text-amber-200 mt-1">{{ $tasksToday }}
+                        </div>
+                    </div>
+                    <div class="bg-red-50 dark:bg-red-900/30 rounded-xl p-4">
+                        <div class="text-sm text-red-600 dark:text-red-300 font-medium">Belum Dikerjakan</div>
+                        <div class="text-3xl font-bold text-red-700 dark:text-red-200 mt-1">{{ $tasksPending }}</div>
+                    </div>
+                    <div class="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-4">
+                        <div class="text-sm text-yellow-600 dark:text-yellow-300 font-medium">Proses Pengerjaan</div>
+                        <div class="text-3xl font-bold text-yellow-700 dark:text-yellow-200 mt-1">
+                            {{ $tasksInProgress }}</div>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/30 rounded-xl p-4 col-span-2">
+                        <div class="text-sm text-green-600 dark:text-green-300 font-medium">Selesai Minggu Ini</div>
+                        <div class="text-3xl font-bold text-green-700 dark:text-green-200 mt-1">
+                            {{ $tasksCompletedThisWeek }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Tabel Semua Tugas --}}
         <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden">
             <div class="p-6">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
@@ -36,8 +124,7 @@
                                 <tr>
                                     <th class="px-4 py-3 text-left text-sm font-semibold">Alat Yang Diperbaiki</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold">Dibuat Pada</th>
-                                    <th class="px-4 py-3 text-left text-sm font-semibold">Terakhir Update</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Deadline Tugas</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -61,8 +148,8 @@
                                                 {{ ucfirst(str_replace('_', ' ', $task->status)) }}
                                             </span>
                                         </td>
-                                        <td class="px-4 py-3">{{ $task->created_at->format('d/m/Y H:i') }}</td>
-                                        <td class="px-4 py-3">{{ $task->updated_at->format('d/m/Y H:i') }}</td>
+                                        <td class="px-4 py-3">{{ $task->deadline }}</td>
+
                                     </tr>
                                 @endforeach
                             </tbody>

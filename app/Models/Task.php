@@ -27,6 +27,29 @@ class Task extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'additional_info' => 'array', // opsional, memudahkan akses
+    ];
+
+    // Di dalam class Task
+
+    // Accessor untuk mendapatkan telegram_user_id dari additional_info (JSON)
+    public function getTelegramUserIdAttribute()
+    {
+        $additional = is_string($this->additional_info)
+            ? json_decode($this->additional_info, true)
+            : $this->additional_info;
+        return $additional['telegram_user_id'] ?? null;
+    }
+
+    // Mutator untuk menyimpan telegram_user_id ke additional_info
+    public function setTelegramUserIdAttribute($value)
+    {
+        $additional = json_decode($this->additional_info, true) ?: [];
+        $additional['telegram_user_id'] = $value;
+        $this->attributes['additional_info'] = json_encode($additional);
+    }
+
     /**
      * Relasi ke model Employee
      * Memungkinkan pemanggilan seperti: $task->assignee->name

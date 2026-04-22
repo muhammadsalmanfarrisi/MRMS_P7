@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,16 +25,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('employees', EmployeeController::class);
 });
 
-use App\Http\Controllers\ReportController;
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // ... rute employees sebelumnya ...
     Route::resource('reports', ReportController::class);
 });
 
-use App\Http\Controllers\TaskController;
+
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('tasks', TaskController::class);
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 });
+
 require __DIR__ . '/auth.php';

@@ -176,7 +176,7 @@
                                         class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 focus:ring-2 focus:ring-indigo-500 px-4 py-2.5">
                                         <option value="unprocessed">⏳ Belum di Proses</option>
                                         <option value="processed" selected>⚡ Sedang di Proses</option>
-                                        <option value="Worked on">🛠️ Sedang Dikerjakan</option>
+                                        <option value="worked_on">🛠️ Sedang Dikerjakan</option>
                                         <option value="finished">✅ Selesai Dikerjakan</option>
                                     </select>
                                 </div>

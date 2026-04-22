@@ -7,7 +7,9 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
@@ -89,6 +91,10 @@ class TaskController extends Controller
                 }
             }
         }
+
+        if ($task->status == 'processed') {
+            $this->sendTaskAssignmentNotification($task);
+        }
         return redirect()->route('tasks.index')->with('success', 'Pekerjaan baru berhasil didaftarkan.');
     }
 
@@ -130,6 +136,9 @@ class TaskController extends Controller
             $data['video_url'] = $request->file('video')->store('tasks/videos', 'public');
         }
 
+        $oldStatus = $task->status;
+        $newStatus = $request->status;
+
         $task->update($data);
 
         // Sync pekerja (otomatis menambah yang baru, menghapus yang tidak dicentang)
@@ -167,6 +176,15 @@ class TaskController extends Controller
             }
         }
 
+        // Kirim notifikasi jika status berubah
+        if ($oldStatus != $newStatus) {
+            $this->sendTelegramNotification($task);
+        }
+
+        if ($oldStatus != $newStatus && $newStatus == 'processed') {
+            $this->sendTaskAssignmentNotification($task);
+        }
+
         return redirect()->route('tasks.index')->with('success', 'Data pekerjaan berhasil diperbarui.');
     }
     public function show($id)
@@ -183,5 +201,169 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Data pekerjaan berhasil dihapus.');
+    }
+    public function updateStatus(Request $request, Task $task)
+    {
+        $oldStatus = $task->status;
+        $newStatus = $request->status;
+
+        $allowed = ['processed', 'worked_on', 'finished'];
+        if (!in_array($newStatus, $allowed)) {
+            return back()->with('error', 'Status tidak valid');
+        }
+
+        $task->status = $newStatus;
+        $task->save();
+
+        // Kirim notifikasi jika status berubah
+        if ($oldStatus != $newStatus) {
+            $this->sendTelegramNotification($task);
+        }
+
+        return back()->with('success', 'Status berhasil diupdate');
+    }
+
+    private function sendTelegramNotification(Task $task)
+    {
+        $botToken = env('TELEGRAM_BOT_TOKEN');
+        Log::info('sendTelegramNotification called', ['token' => $botToken ? 'ada' : 'tidak ada']);
+        if (!$botToken) {
+            Log::error('Bot token missing');
+            return;
+        }
+
+        $chatId = $task->telegram_user_id;
+        Log::info('Chat ID', ['chat_id' => $chatId]); // menggunakan accessor
+        if (!$chatId) {
+            Log::error('Chat ID not found for task ' . $task->id);
+            return;
+        }
+
+        $statusMessages = [
+            'processed' => 'sedang diproses oleh admin',
+            'worked_on' => 'sedang dikerjakan oleh teknisi',
+            'finished'  => 'telah selesai',
+        ];
+
+
+
+        $statusText = $statusMessages[$task->status] ?? $task->status;
+        $message = "🔔 *Update Laporan Kerusakan*\n\n";
+        $message .= "Alat Yang Rusak: {$task->damaged_tool}\n";
+        $message .= "Waktu Pelaporan: {$task->report_time}\n";
+        $message .= "Status: *{$statusText}*\n";
+        $message .= "Waktu update: " . now('Asia/Jakarta')->format('d/m/Y H:i:s') . "\n\n";
+        if ($task->employees->count() > 0) {
+            $message .= "\n*Akan dikerjakan oleh:*\n";
+            foreach ($task->employees as $emp) {
+                $message .= "- {$emp->name}\n";
+            }
+        } else {
+            $message .= "\n*Dikerjakan oleh:* Belum ditugaskan\n";
+        }
+        $message .= "Terima kasih.";
+
+        $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+        $response = Http::post($url, [
+            'chat_id' => $chatId,
+            'text' => $message,
+            'parse_mode' => 'Markdown'
+        ]);
+
+        Log::info('Telegram response', ['status' => $response->status(), 'body' => $response->body()]);
+    }
+
+    private function sendTaskAssignmentNotification(Task $task)
+    {
+        $botToken = env('WORKER_BOT_TOKEN');
+        if (!$botToken) {
+            Log::error('WORKER_BOT_TOKEN not set');
+            return;
+        }
+
+        $employees = $task->employees;
+        if ($employees->isEmpty()) {
+            Log::info('No employees assigned to task ' . $task->id);
+            return;
+        }
+
+        // Pesan yang akan dikirim
+        $message = "🔧 *TUGAS BARU DITERIMA* 🔧\n\n";
+        $message .= "👥 *Ditugaskan Kepada:*\n";
+        if ($task->employees->count() > 0) {
+            foreach ($task->employees as $emp) {
+                $message .= "   • {$emp->name}\n";
+            }
+        } else {
+            $message .= "   • Belum Ditugaskan\n";
+        }
+        $message .= "📌 *Alat/Mesin:* {$task->damaged_tool}\n";
+        $message .= "📝 *Deskripsi:* {$task->description}\n";
+        if ($task->cause) {
+            $message .= "⚠️ *Penyebab:* {$task->cause}\n";
+        }
+        if ($task->deadline) {
+            $message .= "⏰ *Deadline:* " . \Carbon\Carbon::parse($task->deadline)->format('d/m/Y H:i') . "\n";
+        }
+        if ($task->instructions) {
+            $message .= "📋 *Instruksi:* {$task->instructions}\n";
+        }
+        if ($task->detail_instructions && $task->detail_instructions->count() > 0) {
+            $message .= "\n📋 *Hal yang Perlu Dikerjakan:*\n";
+            foreach ($task->detail_instructions as $index => $step) {
+
+                $stepNumber = $index + 1;
+                $message .= "{$stepNumber}. {$step->instruction_step}\n";
+            }
+        }
+
+        // ========== MATERIAL DIBUTUHKAN ==========
+        if ($task->materials && $task->materials->count() > 0) {
+            $message .= "\n📦 *Material Dibutuhkan:*\n";
+            foreach ($task->materials as $material) {
+                $quantity = $material->pivot->quantity ?? ($material->quantity ?? '-');
+                $message .= "   • {$material->material_name}: {$quantity}\n";
+            }
+        }
+        if ($task->materials_needed) {
+            $message .= "🛠️ *Material:* {$task->materials_needed}\n";
+        }
+        $message .= "\nSilakan segera ditindaklanjuti.";
+
+        // 🔹 TOMBOL INLINE
+        $keyboard = [
+            'inline_keyboard' => [
+                [
+                    ['text' => '🔨 Lakukan Pengerjaan', 'callback_data' => "start_work_{$task->id}"]
+                ]
+            ]
+        ];
+
+        $url = "https://api.telegram.org/bot{$botToken}/sendMessage";
+        $successCount = 0;
+
+        foreach ($employees as $employee) {
+            $chatId = $employee->telegram_chat_id;
+            if (!$chatId) {
+                Log::warning("Employee {$employee->id} tidak punya telegram_chat_id");
+                continue;
+            }
+
+            // 🔹 KIRIM PESAN DENGAN TOMBOL
+            $response = \Illuminate\Support\Facades\Http::post($url, [
+                'chat_id' => $chatId,
+                'text' => $message,
+                'parse_mode' => 'Markdown',
+                'reply_markup' => json_encode($keyboard) // ← HARUS json_encode
+            ]);
+
+            if ($response->successful()) {
+                $successCount++;
+                Log::info("Notifikasi terkirim ke employee {$employee->id}");
+            } else {
+                Log::error("Gagal kirim ke {$chatId}: " . $response->body());
+            }
+        }
+        Log::info("Notifikasi tugas dikirim ke {$successCount} dari {$employees->count()} employee");
     }
 }

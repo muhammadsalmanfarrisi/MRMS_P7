@@ -238,7 +238,7 @@
                                                     'color' =>
                                                         'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 border-blue-200 dark:border-blue-800',
                                                 ],
-                                                'Worked on' => [
+                                                'worked_on' => [
                                                     'label' => 'Sedang Dikerjakan',
                                                     'color' =>
                                                         'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',

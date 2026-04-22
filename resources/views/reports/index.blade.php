@@ -105,22 +105,62 @@
                                     <td class="py-3 px-4 font-medium">{{ $report->damaged_tool }}</td>
                                     <td class="py-3 px-4">
                                         @php
-                                            $statusColors = [
-                                                'pending' =>
-                                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
-                                                'proses' =>
-                                                    'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 border-blue-200 dark:border-blue-800',
-                                                'selesai' =>
-                                                    'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 border-green-200 dark:border-green-800',
+                                            $colorMap = [
+                                                'unprocessed' => [
+                                                    'bg' => '#fee2e2', // merah sangat muda
+                                                    'text' => '#991b1b', // merah gelap
+                                                    'border' => '#fecaca', // merah muda
+                                                    'label' => 'Belum di Proses',
+                                                ],
+                                                'processed' => [
+                                                    'bg' => '#dbeafe',
+                                                    'text' => '#1e40af',
+                                                    'border' => '#bfdbfe',
+                                                    'label' => 'Sedang di Proses',
+                                                ],
+                                                'worked_on' => [
+                                                    'bg' => '#fef3c7',
+                                                    'text' => '#92400e',
+                                                    'border' => '#fde68a',
+                                                    'label' => 'Sedang Dikerjakan',
+                                                ],
+                                                'finished' => [
+                                                    'bg' => '#d1fae5',
+                                                    'text' => '#065f46',
+                                                    'border' => '#a7f3d0',
+                                                    'label' => 'Selesai Dikerjakan',
+                                                ],
+                                                'Completed' => [
+                                                    'bg' => '#d1fae5',
+                                                    'text' => '#065f46',
+                                                    'border' => '#a7f3d0',
+                                                    'label' => 'Completed',
+                                                ],
+                                                'In Progress' => [
+                                                    'bg' => '#dbeafe',
+                                                    'text' => '#1e40af',
+                                                    'border' => '#bfdbfe',
+                                                    'label' => 'In Progress',
+                                                ],
+                                                'belum di proses' => [
+                                                    'bg' => '#f3f4f6',
+                                                    'text' => '#1f2937',
+                                                    'border' => '#d1d5db',
+                                                    'label' => 'Belum di Proses',
+                                                ],
                                             ];
-                                            $status = strtolower($report->status);
-                                            $colorClass =
-                                                $statusColors[$status] ??
-                                                'bg-gray-100 text-gray-800 dark:bg-gray-900/50 dark:text-gray-300 border-gray-200 dark:border-gray-700';
+                                            $badge = $colorMap[$report->status] ?? [
+                                                'bg' => '#f3f4f6',
+                                                'text' => '#1f2937',
+                                                'border' => '#d1d5db',
+                                                'label' => ucfirst($report->status),
+                                            ];
                                         @endphp
                                         <span
-                                            class="px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800">
-                                            {{ strtoupper($report->status) }}
+                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border"
+                                            style="background-color: {{ $badge['bg'] }}; color: {{ $badge['text'] }}; border-color: {{ $badge['border'] }};">
+                                            <i class="bi bi-circle-fill mr-1" style="font-size: 6px;"></i>
+                                            {{ $badge['label'] }}
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 text-center">
@@ -427,6 +467,92 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        }
+    </style>
+    <style>
+        /* Badge status dasar */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            line-height: 1.25;
+            border-width: 1px;
+            border-style: solid;
+            transition: all 0.2s;
+        }
+
+        .badge-status i {
+            margin-right: 0.25rem;
+            font-size: 0.6rem;
+        }
+
+        /* Warna untuk setiap status */
+        .status-unprocessed {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+
+        .status-processed,
+        .status-in-progress {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border-color: #bfdbfe;
+        }
+
+        .status-worked-on {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .status-finished,
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+
+        .status-belum-di-proses {
+            background-color: #f3f4f6;
+            color: #1f2937;
+            border-color: #d1d5db;
+        }
+
+        /* Dark mode (opsional, jika body punya kelas .dark) */
+        .dark .status-unprocessed {
+            background-color: #1f2937;
+            color: #9ca3af;
+            border-color: #374151;
+        }
+
+        .dark .status-processed,
+        .dark .status-in-progress {
+            background-color: #1e3a8a;
+            color: #93c5fd;
+            border-color: #1e40af;
+        }
+
+        .dark .status-worked-on {
+            background-color: #78350f;
+            color: #fde68a;
+            border-color: #b45309;
+        }
+
+        .dark .status-finished,
+        .dark .status-completed {
+            background-color: #064e3b;
+            color: #6ee7b7;
+            border-color: #047857;
+        }
+
+        .dark .status-belum-di-proses {
+            background-color: #1f2937;
+            color: #9ca3af;
+            border-color: #374151;
         }
     </style>
 </x-app-layout>
