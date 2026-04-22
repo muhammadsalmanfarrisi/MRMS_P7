@@ -47,7 +47,7 @@ class TaskController extends Controller
             'employee_ids' => 'nullable|array',
             'employee_ids.*' => 'exists:employees,id',
             'steps' => 'nullable|array',
-            'steps.*' => 'required|string',
+            'steps.*' => 'nullable|string',
             'material_names' => 'nullable|array',
             'material_quantities' => 'nullable|array',
         ]);
@@ -115,7 +115,7 @@ class TaskController extends Controller
             'employee_ids' => 'nullable|array',
             'employee_ids.*' => 'exists:employees,id',
             'steps' => 'nullable|array',
-            'steps.*' => 'required|string',
+            'steps.*' => 'nullable|string',
             'material_names' => 'nullable|array',
             'material_quantities' => 'nullable|array',
             'status' => 'required|string',
