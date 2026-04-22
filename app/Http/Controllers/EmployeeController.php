@@ -4,15 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+
 
 class EmployeeController extends Controller
 {
-    // 1. LIHAT SEMUA DATA (INDEX)
+    // INDEX dengan statistik task
     public function index()
     {
-        $employees = Employee::latest()->get();
+        $employees = Employee::with('tasks')->get();
+
+        $employees->each(function ($employee) {
+            $today = Carbon::today();
+            $startOfWeek = Carbon::now()->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
+
+            $tasks = $employee->tasks; // Collection dari model Task
+
+            $employee->tasks_today = $tasks->where('deadline', '>=', $today)->count();
+            $employee->tasks_pending = $tasks->where('status', 'processed')->count();
+            $employee->tasks_in_progress = $tasks->where('status', 'Worked on')->count();
+            $employee->tasks_this_week = $tasks->where('status', 'finished')
+                ->whereBetween('completed_at', [$startOfWeek, $endOfWeek])
+                ->count();
+        });
+
         return view('employees.index', compact('employees'));
     }
+
+    // SHOW - menampilkan seluruh task yang dikerjakan oleh employee tertentu
+    public function show(Employee $employee)
+    {
+        $employee->load('tasks');
+        return view('employees.show', compact('employee'));
+    }
+
 
     // 2. HALAMAN FORM TAMBAH
     public function create()

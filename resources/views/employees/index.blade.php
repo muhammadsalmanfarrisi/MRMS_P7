@@ -90,8 +90,10 @@
                             <tr class="border-b border-gray-200 dark:border-gray-700">
                                 <th class="py-4 px-4 text-left font-semibold text-sm">Nama</th>
                                 <th class="py-4 px-4 text-left font-semibold text-sm">Keahlian</th>
-                                <th class="py-4 px-4 text-left font-semibold text-sm">No. Telepon</th>
-                                <th class="py-4 px-4 text-left font-semibold text-sm">Telegram</th>
+                                <th class="py-4 px-4 text-left font-semibold text-sm">Hari Ini</th>
+                                <th class="py-4 px-4 text-left font-semibold text-sm">Belum</th>
+                                <th class="py-4 px-4 text-left font-semibold text-sm">Dikerjakan</th>
+                                <th class="py-4 px-4 text-left font-semibold text-sm">Minggu Ini</th>
                                 <th class="py-4 px-4 text-center font-semibold text-sm">Aksi</th>
                             </tr>
                         </thead>
@@ -131,27 +133,29 @@
                                             <i class="bi bi-tools mr-1 text-xs"></i> {{ $employee->skill }}
                                         </span>
                                     </td>
-                                    <td class="py-3 px-4">
-                                        @if ($employee->phone_number)
-                                            <a href="tel:{{ $employee->phone_number }}"
-                                                class="flex items-center gap-1 hover:text-indigo-600 transition">
-                                                <i class="bi bi-telephone-fill text-gray-400 text-sm"></i>
-                                                {{ $employee->phone_number }}
-                                            </a>
-                                        @else
-                                            <span class="text-gray-400 text-sm">-</span>
-                                        @endif
+                                    <td class="py-3 px-4 text-center">
+                                        <span
+                                            class="badge-stat bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300">
+                                            {{ $employee->tasks_today }}
+                                        </span>
                                     </td>
-                                    <td class="py-3 px-4">
-                                        @if ($employee->telegram_username)
-                                            <a href="https://t.me/{{ ltrim($employee->telegram_username, '@') }}"
-                                                target="_blank"
-                                                class="flex items-center gap-1 text-sky-600 hover:text-sky-800 dark:text-sky-400 transition">
-                                                <i class="bi bi-telegram"></i> {{ $employee->telegram_username }}
-                                            </a>
-                                        @else
-                                            <span class="text-gray-400 text-sm">-</span>
-                                        @endif
+                                    <td class="py-3 px-4 text-center">
+                                        <span
+                                            class="badge-stat bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300">
+                                            {{ $employee->tasks_pending }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 text-center">
+                                        <span
+                                            class="badge-stat bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300">
+                                            {{ $employee->tasks_in_progress }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 text-center">
+                                        <span
+                                            class="badge-stat bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300">
+                                            {{ $employee->tasks_this_week }}
+                                        </span>
                                     </td>
                                     <td class="py-3 px-4 text-center">
                                         <div class="flex items-center justify-center gap-2">
@@ -160,6 +164,11 @@
                                                 title="Edit Pekerja">
                                                 <i
                                                     class="bi bi-pencil-square text-sm group-hover/edit:scale-110 transition-transform"></i>
+                                            </a>
+                                            <a href="{{ route('employees.show', $employee->id) }}"
+                                                class="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-200 dark:hover:bg-indigo-800/50 transition-all duration-200"
+                                                title="Lihat Tugas">
+                                                <i class="bi bi-eye text-sm"></i>
                                             </a>
                                             <button
                                                 onclick="openDeleteModal({{ $employee->id }}, '{{ addslashes($employee->name) }}')"
@@ -465,6 +474,10 @@
         .btn-pdf:active,
         .btn-print:active {
             transform: translateY(1px);
+        }
+
+        .badge-stat {
+            @apply inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-medium min-w-[40px];
         }
     </style>
 </x-app-layout>
