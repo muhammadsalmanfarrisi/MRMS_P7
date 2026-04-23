@@ -177,9 +177,68 @@
                             </div>
                         </form>
 
+                        <form method="GET" action="{{ route('tasks.index') }}" id="filterStatusForm"
+                            class="space-y-2">
+                            <label
+                                class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                <span
+                                    class="p-1.5 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-purple-600 dark:text-purple-400">
+                                    <i class="bi bi-funnel-fill text-sm"></i>
+                                </span>
+                                <span>Filter Status</span>
+                            </label>
+                            <div class="flex gap-2">
+                                <select name="status" id="status"
+                                    class="appearance-none w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-200">
+                                    <option value="">📋 Semua Status</option>
+                                    <option value="processed" {{ request('status') == 'processed' ? 'selected' : '' }}>
+                                        ⏳ Sedang di Proses</option>
+                                    <option value="worked_on" {{ request('status') == 'worked_on' ? 'selected' : '' }}>
+                                        🛠️ Sedang Dikerjakan</option>
+                                    <option value="finished" {{ request('status') == 'finished' ? 'selected' : '' }}>✅
+                                        Selesai Dikerjakan</option>
+                                    <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>
+                                        🎉 Completed</option>
+                                    <option value="In Progress"
+                                        {{ request('status') == 'In Progress' ? 'selected' : '' }}>⚡ In Progress
+                                    </option>
+                                </select>
+                                <button type="submit"
+                                    class="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md transition flex items-center gap-2">
+                                    <i class="bi bi-funnel-fill"></i> Terapkan
+                                </button>
+                            </div>
+                            <div class="text-right">
+                                @if (request('status'))
+                                    <a href="{{ route('tasks.index', ['date' => request('date')]) }}"
+                                        class="text-xs text-purple-600 hover:underline">Hapus filter status</a>
+                                @endif
+                            </div>
+                        </form>
+
                         {{-- Tampilkan pesan jika tidak ada data (opsional, bisa ditambahkan di bawah tabel) --}}
                     </div>
                 </div>
+                @if (request('status') || request('date'))
+                    <div class="px-4 py-2 mb-4 flex flex-wrap gap-2 text-xs bg-gray-100 dark:bg-gray-800 rounded-lg">
+                        @if (request('status'))
+                            <span
+                                class="bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 px-3 py-1 rounded-full flex items-center gap-1">
+                                Status: {{ ucfirst(str_replace('_', ' ', request('status'))) }}
+                                <a href="{{ route('tasks.index', ['date' => request('date')]) }}"
+                                    class="hover:text-purple-600"><i class="bi bi-x-circle-fill"></i></a>
+                            </span>
+                        @endif
+                        @if (request('date'))
+                            <span
+                                class="bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-full flex items-center gap-1">
+                                Deadline: {{ \Carbon\Carbon::parse(request('date'))->translatedFormat('d F Y') }}
+                                <a href="{{ route('tasks.index', ['status' => request('status')]) }}"
+                                    class="hover:text-blue-600"><i class="bi bi-x-circle-fill"></i></a>
+                            </span>
+                        @endif
+                    </div>
+                @endif
                 {{-- Tabel dengan DataTables --}}
                 <div class="overflow-x-auto relative">
                     <table id="tasksTable" class="min-w-full text-gray-700 dark:text-gray-300">
@@ -497,9 +556,7 @@
             });
 
             $('#refreshTable').on('click', function() {
-                table.ajax.reload();
-                $(this).addClass('animate-spin');
-                setTimeout(() => $(this).removeClass('animate-spin'), 500);
+                location.reload();
             });
         });
     </script>
@@ -516,6 +573,16 @@
                     document.getElementById('filterForm').submit();
                 }
             });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#datepicker", {
+            dateFormat: "Y-m-d",
+            defaultDate: "{{ $selectedDate ?? now()->toDateString() }}",
+            onChange: function(selectedDates, dateStr, instance) {
+                document.getElementById('filterDateForm').submit();
+            }
         });
     </script>
     <style>

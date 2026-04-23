@@ -15,15 +15,25 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        // Default ke hari ini jika tidak ada input
-        $selectedDate = $request->query('date', Carbon::now()->toDateString());
+        // Ambil filter tanggal dari request, default hari ini
+        $selectedDate = $request->input('date', now()->toDateString());
 
-        $tasks = Task::where('status', '!=', 'unprocessed')
-            ->whereDate('deadline', $selectedDate) // langsung filter berdasarkan tanggal yang dipilih
-            ->latest()
-            ->get();
+        // Ambil filter status dari request, default kosong
+        $selectedStatus = $request->input('status', '');
 
-        return view('tasks.index', compact('tasks', 'selectedDate'));
+        // Query dasar: filter berdasarkan deadline
+        $query = Task::query()->whereDate('deadline', $selectedDate);
+
+        // Tambahkan filter status jika ada
+        if ($selectedStatus !== '') {
+            $query->where('status', $selectedStatus);
+        }
+
+        // Load relasi employees (jika ada)
+        $tasks = $query->with('employees')->get();
+
+        // Kirim ke view
+        return view('tasks.index', compact('tasks', 'selectedDate', 'selectedStatus'));
     }
 
     public function create()

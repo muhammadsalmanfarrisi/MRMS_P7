@@ -69,6 +69,13 @@
                             class="text-xs bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 px-2 py-0.5 rounded-full">{{ $reports->count() }}
                             record</span>
                     </div>
+                    <div class="flex items-center gap-2">
+                        <button id="refreshTable"
+                            class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                            title="Refresh Data">
+                            <i class="bi bi-arrow-repeat text-lg"></i>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Tabel dengan styling modern --}}
@@ -378,6 +385,9 @@
                     orderable: false,
                     searchable: false
                 }]
+            });
+            $('#refreshTable').on('click', function() {
+                location.reload();
             });
         });
     </script>

@@ -230,7 +230,7 @@
         @endif
 
         {{-- Informasi Tambahan --}}
-        <div
+        {{-- <div
             class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 overflow-hidden">
             <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                 <h3 class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -259,10 +259,10 @@
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Informasi
-                        Lainnya</label>
-                    {{-- <p class="text-gray-700 dark:text-gray-300">{{ $task->additional_info ?? '-' }}</p> --}}
-                </div>
+                        Lainnya</label> --}}
+        {{-- <p class="text-gray-700 dark:text-gray-300">{{ $task->additional_info ?? '-' }}</p> --}}
+        {{-- </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </x-app-layout>

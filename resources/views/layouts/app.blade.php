@@ -406,6 +406,8 @@
     <!-- Flatpickr CSS & JS (wajib)
         -->
 
+    @stack('scripts')
+
 
 </body>
 

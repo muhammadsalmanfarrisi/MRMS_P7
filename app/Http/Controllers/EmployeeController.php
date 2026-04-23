@@ -35,8 +35,27 @@ class EmployeeController extends Controller
     // SHOW - menampilkan seluruh task yang dikerjakan oleh employee tertentu
     public function show(Employee $employee)
     {
-        $employee->load('tasks');
-        return view('employees.show', compact('employee'));
+        // Query dasar: semua tasks milik employee ini
+        $tasksQuery = $employee->tasks();
+
+        // Filter berdasarkan tanggal (jika ada)
+        if ($date = request('date')) {
+            $tasksQuery->whereDate('deadline', $date);
+        }
+
+        // Filter berdasarkan status (jika ada)
+        if ($status = request('status')) {
+            $tasksQuery->where('status', $status);
+        }
+
+        // Ambil hasil query yang sudah difilter
+        $filteredTasks = $tasksQuery->get();
+
+        // Load relasi tasks (jika masih diperlukan untuk keperluan lain)
+        // Karena kita sudah punya $filteredTasks, kita bisa tidak load ulang
+        // $employee->load('tasks'); // opsional, jika butuh data lengkap untuk bagian lain
+
+        return view('employees.show', compact('employee', 'filteredTasks'));
     }
 
 

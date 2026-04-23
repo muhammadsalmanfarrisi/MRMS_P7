@@ -80,6 +80,13 @@
                             class="text-xs bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">{{ $employees->count() }}
                             record</span>
                     </div>
+                    <div class="flex items-center gap-2">
+                        <button id="refreshTable"
+                            class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                            title="Refresh Data">
+                            <i class="bi bi-arrow-repeat text-lg"></i>
+                        </button>
+                    </div>
 
                 </div>
 
@@ -371,11 +378,8 @@
                 }
             });
 
-            // Tombol refresh
             $('#refreshTable').on('click', function() {
-                table.ajax.reload();
-                $(this).addClass('animate-spin');
-                setTimeout(() => $(this).removeClass('animate-spin'), 500);
+                location.reload();
             });
         });
     </script>
