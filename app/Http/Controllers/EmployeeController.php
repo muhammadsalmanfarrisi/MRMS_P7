@@ -49,7 +49,7 @@ class EmployeeController extends Controller
         }
 
         // Ambil hasil query yang sudah difilter
-        $filteredTasks = $tasksQuery->get();
+        $filteredTasks = $tasksQuery->with('workReports')->get();
 
         // Load relasi tasks (jika masih diperlukan untuk keperluan lain)
         // Karena kita sudah punya $filteredTasks, kita bisa tidak load ulang

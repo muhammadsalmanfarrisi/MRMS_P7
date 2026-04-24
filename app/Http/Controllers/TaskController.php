@@ -206,8 +206,27 @@ class TaskController extends Controller
 
     public function destroy(Task $task)
     {
-        if ($task->photo_url) Storage::disk('public')->delete($task->photo_url);
-        if ($task->video_url) Storage::disk('public')->delete($task->video_url);
+        // Hapus file foto/video dari tabel tasks (laporan kerusakan)
+        if ($task->photo_url) {
+            Storage::disk('public')->delete($task->photo_url);
+        }
+        if ($task->video_url) {
+            Storage::disk('public')->delete($task->video_url);
+        }
+
+        // *** TAMBAHAN: Hapus file dari laporan pekerjaan (work_reports) ***
+        foreach ($task->workReports as $workReport) {
+            if ($workReport->photo) {
+                Storage::disk('public')->delete($workReport->photo);
+            }
+            if ($workReport->video) {
+                Storage::disk('public')->delete($workReport->video);
+            }
+        }
+        // Hapus semua work reports dari database (jika tidak menggunakan cascade delete)
+        $task->workReports()->delete();
+
+        // Hapus task utama
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Data pekerjaan berhasil dihapus.');

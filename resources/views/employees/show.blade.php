@@ -314,6 +314,7 @@
                                     <th class="py-4 px-4 text-left font-semibold text-sm">Alat/Mesin</th>
                                     <th class="py-4 px-4 text-left font-semibold text-sm">Status</th>
                                     <th class="py-4 px-4 text-left font-semibold text-sm">Deadline</th>
+                                    <th class="py-4 px-4 text-center font-semibold text-sm">Laporan</th>
                                     <th class="py-4 px-4 text-center font-semibold text-sm">Aksi</th>
                                 </tr>
                             </thead>
@@ -396,6 +397,42 @@
                                                 </div>
                                             @else
                                                 <span class="text-gray-400 text-sm">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3 px-4 text-center">
+                                            @php
+                                                $latestReport = $task
+                                                    ->workReports()
+                                                    ->whereNotNull('completed_at')
+                                                    ->latest('completed_at')
+                                                    ->first();
+                                            @endphp
+                                            @if ($latestReport && ($latestReport->photo || $latestReport->video))
+                                                <div class="flex items-center justify-center gap-2">
+                                                    @if ($latestReport->photo)
+                                                        <a href="{{ asset('storage/' . $latestReport->photo) }}"
+                                                            target="_blank" class="group relative">
+                                                            <img src="{{ asset('storage/' . $latestReport->photo) }}"
+                                                                alt="Foto Pekerjaan"
+                                                                class="w-10 h-10 object-cover rounded-lg shadow-md hover:scale-150 transition-transform duration-300 z-10 hover:z-50">
+                                                            <span
+                                                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">Foto</span>
+                                                        </a>
+                                                    @endif
+                                                    @if ($latestReport->video)
+                                                        <a href="{{ asset('storage/' . $latestReport->video) }}"
+                                                            target="_blank" class="group relative">
+                                                            <div
+                                                                class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center shadow-md hover:scale-150 transition-transform duration-300">
+                                                                <i class="bi bi-play-fill text-white text-xl"></i>
+                                                            </div>
+                                                            <span
+                                                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">Video</span>
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @else
+                                                <span class="text-gray-400 text-xs italic">—</span>
                                             @endif
                                         </td>
                                         <td class="py-3 px-4 text-center">
@@ -482,7 +519,7 @@
                             [0, 'asc']
                         ],
                         columnDefs: [{
-                            targets: [3],
+                            targets: [4],
                             orderable: false,
                             searchable: false
                         }],

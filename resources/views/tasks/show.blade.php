@@ -229,40 +229,173 @@
             </div>
         @endif
 
-        {{-- Informasi Tambahan --}}
-        {{-- <div
-            class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 dark:border-gray-700/50 overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
-                    <i class="bi bi-paperclip text-purple-600"></i> Informasi Tambahan
-                </h3>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Foto</label>
-                    @if ($task->photo_url)
-                        <img src="{{ asset('storage/' . $task->photo_url) }}" alt="Foto Kerusakan"
-                            class="max-h-48 rounded-lg shadow">
-                    @else
-                        <p class="text-gray-400 italic">Tidak ada foto</p>
-                    @endif
+        {{-- ==================== LAPORAN PEKERJAAN MEWAH ==================== --}}
+        @php
+            $workReport = $task->workReports()->whereNotNull('completed_at')->latest('completed_at')->first();
+        @endphp
+
+        @if ($workReport)
+            <div class="relative mt-8" data-aos="fade-up" data-aos-duration="1000">
+                <!-- Ornamen latar premium -->
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 rounded-3xl blur-xl opacity-30 animate-pulse">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Video</label>
-                    @if ($task->video_url)
-                        <video controls class="max-h-48 rounded-lg shadow">
-                            <source src="{{ asset('storage/' . $task->video_url) }}" type="video/mp4">
-                        </video>
-                    @else
-                        <p class="text-gray-400 italic">Tidak ada video</p>
-                    @endif
+
+                <div
+                    class="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl rounded-3xl border border-white/30 dark:border-white/10 shadow-2xl overflow-hidden">
+                    <!-- Header card -->
+                    <div
+                        class="relative px-8 py-6 bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-b border-white/30 dark:border-white/10">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="p-3 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl shadow-lg shadow-emerald-500/20">
+                                    <i class="bi bi-clipboard-check text-3xl text-white"></i>
+                                </div>
+                                <div>
+                                    <h3
+                                        class="text-2xl font-black bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-700 dark:from-emerald-300 dark:via-teal-300 dark:to-cyan-300 bg-clip-text text-transparent tracking-tight">
+                                        LAPORAN PEKERJAAN
+                                    </h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">
+                                        <i class="bi bi-clock-history"></i> Diselesaikan pada
+                                        {{ $workReport->completed_at->format('d M Y, H:i') }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-full border border-emerald-200 dark:border-emerald-600/30">
+                                <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
+                                <span
+                                    class="text-xs font-bold text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">Selesai</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Konten utama -->
+                    <div class="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Foto -->
+                        <div
+                            class="group relative bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700/50 p-5 transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-500/10 hover:border-emerald-200 dark:hover:border-emerald-600/30">
+                            <div
+                                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-t-2xl scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left">
+                            </div>
+                            <h4
+                                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
+                                <i class="bi bi-camera-fill text-emerald-500"></i> 📸 Foto Pekerjaan
+                            </h4>
+                            <div class="flex justify-center">
+                                @if ($workReport->photo)
+                                    <a href="{{ asset('storage/' . $workReport->photo) }}" target="_blank"
+                                        class="block relative">
+                                        <img src="{{ asset('storage/' . $workReport->photo) }}" alt="Foto Pekerjaan"
+                                            class="max-h-64 rounded-xl shadow-xl group-hover:scale-105 transition-transform duration-500 ease-out">
+                                        <div
+                                            class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <span
+                                                class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white font-bold text-sm">
+                                                <i class="bi bi-arrows-fullscreen"></i> Lihat Penuh
+                                            </span>
+                                        </div>
+                                    </a>
+                                @else
+                                    <div
+                                        class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                                        <i class="bi bi-image-alt text-5xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                                        <p class="text-sm font-medium italic">Tidak ada foto</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Video -->
+                        <div
+                            class="group relative bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700/50 p-5 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/10 hover:border-teal-200 dark:hover:border-teal-600/30">
+                            <div
+                                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-teal-400 to-cyan-500 rounded-t-2xl scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left">
+                            </div>
+                            <h4
+                                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
+                                <i class="bi bi-play-circle-fill text-teal-500"></i> 🎥 Video Pekerjaan
+                            </h4>
+                            <div class="flex justify-center">
+                                @if ($workReport->video)
+                                    <div class="relative group/video w-full">
+                                        <video controls
+                                            class="w-full max-h-64 rounded-xl shadow-xl group-hover:scale-105 transition-transform duration-500">
+                                            <source src="{{ asset('storage/' . $workReport->video) }}"
+                                                type="video/mp4">
+                                            Browser Anda tidak mendukung.
+                                        </video>
+                                        <a href="{{ asset('storage/' . $workReport->video) }}" target="_blank"
+                                            class="absolute top-3 right-3 px-3 py-1.5 bg-white/30 backdrop-blur-md rounded-lg text-white text-xs font-bold opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
+                                            <i class="bi bi-box-arrow-up-right"></i> Buka
+                                        </a>
+                                    </div>
+                                @else
+                                    <div
+                                        class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                                        <i class="bi bi-film text-5xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                                        <p class="text-sm font-medium italic">Tidak ada video</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Detail Laporan -->
+                        <div
+                            class="lg:col-span-2 bg-gradient-to-br from-gray-50 to-emerald-50/50 dark:from-gray-800/50 dark:to-emerald-900/10 rounded-2xl border border-gray-200 dark:border-gray-700/50 p-6">
+                            <h4
+                                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-6 flex items-center gap-2">
+                                <i class="bi bi-card-text text-emerald-500"></i> Detail Laporan Pengerjaan
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Kondisi Awal -->
+                                <div
+                                    class="relative bg-white/80 dark:bg-gray-900/80 rounded-xl p-4 border border-white/30 dark:border-white/10 shadow-lg">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                                            <i class="bi bi-exclamation-triangle-fill text-amber-600"></i>
+                                        </div>
+                                        <h5 class="font-bold text-gray-700 dark:text-gray-300 text-sm">Kondisi Awal
+                                        </h5>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                                        {{ $workReport->initial_condition ?? '-' }}</p>
+                                </div>
+
+                                <!-- Perbaikan -->
+                                <div
+                                    class="relative bg-white/80 dark:bg-gray-900/80 rounded-xl p-4 border border-white/30 dark:border-white/10 shadow-lg">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                            <i class="bi bi-tools text-blue-600"></i>
+                                        </div>
+                                        <h5 class="font-bold text-gray-700 dark:text-gray-300 text-sm">Perbaikan
+                                            Dilakukan</h5>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                                        {{ $workReport->repair_done ?? '-' }}</p>
+                                </div>
+
+                                <!-- Analisa Penyebab -->
+                                <div
+                                    class="relative bg-white/80 dark:bg-gray-900/80 rounded-xl p-4 border border-white/30 dark:border-white/10 shadow-lg">
+                                    <div class="flex items-center gap-2 mb-3">
+                                        <div class="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                                            <i class="bi bi-search text-purple-600"></i>
+                                        </div>
+                                        <h5 class="font-bold text-gray-700 dark:text-gray-300 text-sm">Analisa Penyebab
+                                        </h5>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                                        {{ $workReport->damage_cause_analysis ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Informasi
-                        Lainnya</label> --}}
-        {{-- <p class="text-gray-700 dark:text-gray-300">{{ $task->additional_info ?? '-' }}</p> --}}
-        {{-- </div>
             </div>
-        </div> --}}
+        @endif
     </div>
 </x-app-layout>

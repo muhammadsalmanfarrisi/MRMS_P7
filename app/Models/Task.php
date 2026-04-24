@@ -69,7 +69,10 @@ class Task extends Model
     {
         return $this->hasMany(TaskMaterial::class);
     }
-
+    public function workReports()
+    {
+        return $this->hasMany(WorkReport::class, 'task_id');
+    }
 
     // Relasi ke material yang dibutuhkan (jika many-to-many)
 
