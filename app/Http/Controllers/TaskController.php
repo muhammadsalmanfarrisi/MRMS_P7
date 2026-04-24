@@ -396,6 +396,61 @@ class TaskController extends Controller
             if ($response->successful()) {
                 $successCount++;
                 Log::info("Notifikasi terkirim ke employee {$employee->id}");
+
+                // ========== KIRIM FOTO JIKA ADA ==========
+                if ($task->photo_url) {
+                    try {
+                        $photoPath = storage_path('app/public/' . $task->photo_url);
+                        if (file_exists($photoPath)) {
+                            $photoResponse = \Illuminate\Support\Facades\Http::attach(
+                                'photo',
+                                file_get_contents($photoPath),
+                                basename($photoPath)
+                            )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
+                                'chat_id' => $chatId,
+                                'caption' => '📸 Foto kerusakan dari pelapor',
+                            ]);
+
+                            if ($photoResponse->successful()) {
+                                Log::info("Foto terkirim ke {$chatId}");
+                            } else {
+                                Log::warning("Gagal kirim foto ke {$chatId}: " . $photoResponse->body());
+                            }
+                        } else {
+                            Log::warning("File foto tidak ditemukan: {$photoPath}");
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Error kirim foto: " . $e->getMessage());
+                    }
+                }
+
+                // ========== KIRIM VIDEO JIKA ADA ==========
+                if ($task->video_url) {
+                    try {
+                        $videoPath = storage_path('app/public/' . $task->video_url);
+                        if (file_exists($videoPath)) {
+                            $videoResponse = \Illuminate\Support\Facades\Http::attach(
+                                'video',
+                                file_get_contents($videoPath),
+                                basename($videoPath)
+                            )->post("https://api.telegram.org/bot{$botToken}/sendVideo", [
+                                'chat_id' => $chatId,
+                                'caption' => '🎥 Video kerusakan dari pelapor',
+                            ]);
+
+                            if ($videoResponse->successful()) {
+                                Log::info("Video terkirim ke {$chatId}");
+                            } else {
+                                Log::warning("Gagal kirim video ke {$chatId}: " . $videoResponse->body());
+                            }
+                        } else {
+                            Log::warning("File video tidak ditemukan: {$videoPath}");
+                        }
+                    } catch (\Exception $e) {
+                        Log::error("Error kirim video: " . $e->getMessage());
+                    }
+                }
+                // ==========================================
             } else {
                 Log::error("Gagal kirim ke {$chatId}: " . $response->body());
             }
