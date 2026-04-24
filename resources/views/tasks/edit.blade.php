@@ -91,10 +91,17 @@
                                         <input type="file" name="photo" accept="image/*"
                                             class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-all">
                                         @if ($task->photo_url)
-                                            <a href="{{ asset('storage/' . $task->photo_url) }}" target="_blank"
-                                                class="inline-flex items-center gap-1 text-xs text-indigo-500 mt-2 hover:underline">
-                                                <i class="bi bi-image-fill"></i> Lihat Foto Lama
-                                            </a>
+                                            <div class="mt-2">
+                                                <a href="{{ asset('storage/' . $task->photo_url) }}" target="_blank">
+                                                    <img src="{{ asset('storage/' . $task->photo_url) }}"
+                                                        alt="Foto Kerusakan"
+                                                        class="w-32 rounded-lg shadow-lg hover:scale-105 transition-transform">
+                                                </a>
+                                                <a href="{{ asset('storage/' . $task->photo_url) }}" target="_blank"
+                                                    class="inline-flex items-center gap-1 text-xs text-indigo-500 mt-2 hover:underline">
+                                                    <i class="bi bi-image-fill"></i> Lihat Foto Lama
+                                                </a>
+                                            </div>
                                         @endif
                                     </div>
                                     <div>
@@ -104,10 +111,17 @@
                                         <input type="file" name="video" accept="video/mp4"
                                             class="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100 transition-all">
                                         @if ($task->video_url)
-                                            <a href="{{ asset('storage/' . $task->video_url) }}" target="_blank"
-                                                class="inline-flex items-center gap-1 text-xs text-rose-500 mt-2 hover:underline">
-                                                <i class="bi bi-play-circle-fill"></i> Lihat Video Lama
-                                            </a>
+                                            <div class="mt-2">
+                                                <video controls class="w-48 rounded-lg shadow-lg">
+                                                    <source src="{{ asset('storage/' . $task->video_url) }}"
+                                                        type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                                <a href="{{ asset('storage/' . $task->video_url) }}" target="_blank"
+                                                    class="inline-flex items-center gap-1 text-xs text-rose-500 mt-2 hover:underline">
+                                                    <i class="bi bi-play-circle-fill"></i> Lihat Video Lama
+                                                </a>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
