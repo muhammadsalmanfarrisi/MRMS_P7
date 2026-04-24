@@ -41,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 });
 
-
+Route::get('/test-notif', function () {
+    \App\Models\Task::sendRecentActivitiesToTelegramGroup();
+    return 'Notif dikirim, cek grup dan log.';
+});
 
 require __DIR__ . '/auth.php';

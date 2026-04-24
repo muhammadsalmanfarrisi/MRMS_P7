@@ -13,23 +13,19 @@ class TaskObserver
      */
     public function created(Task $task): void
     {
-        // Hanya broadcast jika status awal adalah 'unprocessed'
+        \Illuminate\Support\Facades\Log::info('👁️ TaskObserver::created dipanggil', ['task_id' => $task->id]);
+
         if ($task->status === 'unprocessed') {
             event(new TaskActivity($task, 'created'));
         }
     }
 
-    /**
-     * Handle the Task "updated" event.
-     * Triggered saat task diupdate (perubahan status).
-     */
     public function updated(Task $task): void
     {
-        // Cek apakah kolom 'status' berubah
+        \Illuminate\Support\Facades\Log::info('👁️ TaskObserver::updated dipanggil', ['task_id' => $task->id]);
+
         if ($task->isDirty('status')) {
             $newStatus = $task->status;
-
-            // Status yang diizinkan untuk di-broadcast
             $allowedStatuses = ['processed', 'worked_on', 'finished'];
 
             if (in_array($newStatus, $allowedStatuses)) {
