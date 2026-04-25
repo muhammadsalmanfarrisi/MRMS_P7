@@ -70,7 +70,8 @@
                             {{ $task->damaged_tool ?? '-' }}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Penyebab
+                        <label
+                            class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Penyebab/Kronologi
                             Kerusakan</label>
                         <p class="text-gray-700 dark:text-gray-300">{{ $task->cause ?? '-' }}</p>
                     </div>

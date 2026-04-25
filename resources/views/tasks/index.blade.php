@@ -197,11 +197,7 @@
                                         🛠️ Sedang Dikerjakan</option>
                                     <option value="finished" {{ request('status') == 'finished' ? 'selected' : '' }}>✅
                                         Selesai Dikerjakan</option>
-                                    <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>
-                                        🎉 Completed</option>
-                                    <option value="In Progress"
-                                        {{ request('status') == 'In Progress' ? 'selected' : '' }}>⚡ In Progress
-                                    </option>
+
                                 </select>
                                 <button type="submit"
                                     class="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md transition flex items-center gap-2">
