@@ -43,7 +43,7 @@
                                 <h3
                                     class="flex items-center gap-2 text-xl font-black text-gray-800 dark:text-white tracking-tight">
                                     <i class="bi bi-shield-shaded text-2xl text-indigo-500"></i>
-                                    <span>INFORMASI KERUSAKAN PREMIUM</span>
+                                    <span>INFORMASI KERUSAKAN</span>
                                 </h3>
                             </div>
                             <div class="p-6 space-y-5">
@@ -74,6 +74,13 @@
                                         class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 px-4 py-2.5 font-medium">
                                 </div>
 
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">📝
+                                        Penyebab/Kronologi Kerusakan</label>
+                                    <textarea name="cause" rows="3"
+                                        class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 focus:ring-2 focus:ring-indigo-500 transition-all duration-300 px-4 py-2.5">{{ old('cause', $task->cause) }}</textarea>
+                                </div>
                                 <div>
                                     <label
                                         class="block text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">📝
