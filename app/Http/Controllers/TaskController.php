@@ -15,24 +15,22 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil filter tanggal dari request, default hari ini
         $selectedDate = $request->input('date', now()->toDateString());
-
-        // Ambil filter status dari request, default kosong
         $selectedStatus = $request->input('status', '');
 
-        // Query dasar: filter berdasarkan deadline
+        Log::info('📅 Date: ' . $selectedDate);
+        Log::info('🏷️ Status: ' . ($selectedStatus ?: '(kosong)'));
+
         $query = Task::query()->whereDate('deadline', $selectedDate);
 
-        // Tambahkan filter status jika ada
         if ($selectedStatus !== '') {
             $query->where('status', $selectedStatus);
         }
 
-        // Load relasi employees (jika ada)
         $tasks = $query->with('employees')->get();
 
-        // Kirim ke view
+        Log::info('📊 Jumlah task: ' . $tasks->count());
+
         return view('tasks.index', compact('tasks', 'selectedDate', 'selectedStatus'));
     }
 

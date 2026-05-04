@@ -177,8 +177,8 @@
                             </div>
                         </form>
 
-                        <form method="GET" action="{{ route('tasks.index') }}" id="filterStatusForm"
-                            class="space-y-2">
+                        {{-- FILTER STATUS VERSION LINK (PASTI BERHASIL) --}}
+                        <div class="space-y-2">
                             <label
                                 class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 <span
@@ -187,30 +187,51 @@
                                 </span>
                                 <span>Filter Status</span>
                             </label>
-                            <div class="flex gap-2">
-                                <select name="status" id="status"
-                                    class="appearance-none w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-xl text-gray-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all duration-200">
-                                    <option value="">📋 Semua Status</option>
-                                    <option value="processed" {{ request('status') == 'processed' ? 'selected' : '' }}>
-                                        ⏳ Sedang di Proses</option>
-                                    <option value="worked_on" {{ request('status') == 'worked_on' ? 'selected' : '' }}>
-                                        🛠️ Sedang Dikerjakan</option>
-                                    <option value="finished" {{ request('status') == 'finished' ? 'selected' : '' }}>✅
-                                        Selesai Dikerjakan</option>
+                            <div class="flex flex-wrap gap-2">
+                                @php
+                                    $currentDate = request('date', $selectedDate);
+                                @endphp
 
-                                </select>
-                                <button type="submit"
-                                    class="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md transition flex items-center gap-2">
-                                    <i class="bi bi-funnel-fill"></i> Terapkan
-                                </button>
+                                <a href="{{ route('tasks.index', ['date' => $currentDate]) }}"
+                                    class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 
+           {{ !request('status') ? 'bg-purple-600 text-white shadow-md' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600' }}">
+                                    📋 Semua Status
+                                </a>
+
+                                <a href="{{ route('tasks.index', ['status' => 'processed', 'date' => $currentDate]) }}"
+                                    class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 
+           {{ request('status') == 'processed' ? 'bg-purple-600 text-white shadow-md' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600' }}">
+                                    ⏳ Sedang di Proses
+                                </a>
+
+                                <a href="{{ route('tasks.index', ['status' => 'worked_on', 'date' => $currentDate]) }}"
+                                    class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 
+           {{ request('status') == 'worked_on' ? 'bg-purple-600 text-white shadow-md' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600' }}">
+                                    🛠️ Sedang Dikerjakan
+                                </a>
+
+                                <a href="{{ route('tasks.index', ['status' => 'progress_report', 'date' => $currentDate]) }}"
+                                    class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 
+           {{ request('status') == 'progress_report' ? 'bg-purple-600 text-white shadow-md' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600' }}">
+                                    📊 Laporan Progress
+                                </a>
+
+                                <a href="{{ route('tasks.index', ['status' => 'finished', 'date' => $currentDate]) }}"
+                                    class="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 
+           {{ request('status') == 'finished' ? 'bg-purple-600 text-white shadow-md' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600' }}">
+                                    ✅ Selesai Dikerjakan
+                                </a>
                             </div>
-                            <div class="text-right">
-                                @if (request('status'))
-                                    <a href="{{ route('tasks.index', ['date' => request('date')]) }}"
-                                        class="text-xs text-purple-600 hover:underline">Hapus filter status</a>
-                                @endif
-                            </div>
-                        </form>
+
+                            @if (request('status'))
+                                <div class="text-right">
+                                    <a href="{{ route('tasks.index', ['date' => $currentDate]) }}"
+                                        class="text-xs text-purple-600 hover:underline">
+                                        <i class="bi bi-x-circle"></i> Hapus filter status
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
 
                         {{-- Tampilkan pesan jika tidak ada data (opsional, bisa ditambahkan di bawah tabel) --}}
                     </div>
@@ -317,6 +338,11 @@
                                                     'label' => 'Belum di Proses',
                                                     'color' =>
                                                         'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border-gray-300',
+                                                ],
+                                                'progress_report' => [
+                                                    'label' => 'Laporan Progress',
+                                                    'color' =>
+                                                        'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300 border-purple-200 dark:border-purple-800',
                                                 ],
                                             ];
                                             $status = $statusMap[$task->status] ?? [
