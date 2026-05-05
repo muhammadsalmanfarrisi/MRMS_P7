@@ -113,6 +113,27 @@
                             {{ __('Employees') }}
                         </span>
                     </a>
+                    <a href="{{ route('tasks.overdue') }}"
+                        class="group relative flex items-center gap-1.5 px-5 py-2 text-base font-semibold tracking-wide transition-all duration-300
+    text-gray-800 dark:text-gray-100 hover:text-red-700 dark:hover:text-red-300
+    {{ request()->routeIs('tasks.overdue') ? '!text-red-700 dark:!text-red-300' : '' }}">
+                        <!-- Ikon: Exclamation Triangle untuk overdue -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                        <span
+                            class="relative inline-block
+        before:absolute before:bottom-0 before:left-1/2 before:w-0 before:h-0.5 
+        before:bg-gradient-to-r before:from-red-400 before:to-red-600 
+        before:shadow-[0_0_8px_rgba(248,113,113,0.6)]
+        before:transition-all before:duration-300 before:ease-out
+        group-hover:before:w-full group-hover:before:left-0
+        {{ request()->routeIs('tasks.overdue') ? 'before:!w-full before:!left-0' : '' }}">
+                            {{ __('Overdue') }}
+                        </span>
+                    </a>
 
 
                     {{-- Contoh link tambahan: Bon Permintaan --}}
@@ -193,10 +214,10 @@
                                hover:text-amber-700 dark:hover:text-amber-300
                                focus:outline-none focus:ring-2 focus:ring-amber-400/70 transition-all">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'block': !open }" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'block': open, 'hidden': !open }" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{ 'hidden': open, 'block': !open }" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{ 'block': open, 'hidden': !open }" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
@@ -244,6 +265,13 @@
           hover:text-amber-700 dark:hover:text-amber-300
           {{ request()->routeIs('employees.index') ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300' : '' }}">
                 <i class="bi bi-people-fill mr-3 text-amber-500"></i> {{ __('Employees') }}
+            </a>
+            <a href="{{ route('tasks.overdue') }}"
+                class="block px-5 py-4 rounded-2xl text-base font-semibold transition-all
+          text-gray-800 dark:text-gray-100 hover:bg-red-50 dark:hover:bg-red-900/30 
+          hover:text-red-700 dark:hover:text-red-300
+          {{ request()->routeIs('tasks.overdue') ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300' : '' }}">
+                <i class="bi bi-exclamation-triangle-fill mr-3 text-red-500"></i> {{ __('Overdue') }}
             </a>
         </div>
 

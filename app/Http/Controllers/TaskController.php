@@ -496,4 +496,14 @@ class TaskController extends Controller
         }
         Log::info("Notifikasi tugas dikirim ke {$successCount} dari {$employees->count()} employee");
     }
+    public function overdue()
+    {
+        $overdueTasks = Task::where('deadline', '<', now())
+            ->where('status', '!=', 'finished')
+            ->with('employees') // jika ada relasi
+            ->orderBy('deadline')
+            ->get();
+
+        return view('tasks.overdue', compact('overdueTasks'));
+    }
 }

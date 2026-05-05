@@ -21,7 +21,7 @@ class DashboardController extends Controller
                 ->count();
 
             // ✅ BARU: Tugas yang deadline-nya sudah lewat dan belum selesai
-            $overdueTasks = Task::where('deadline', '<', $now->startOfDay())
+            $overdueTasks = Task::where('deadline', '<', $now)
                 ->where('status', '!=', 'finished')
                 ->count();
 

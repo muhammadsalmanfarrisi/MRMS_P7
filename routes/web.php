@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('reports', ReportController::class);
 });
 
-
+Route::get('/tasks/overdue', [TaskController::class, 'overdue'])->name('tasks.overdue');
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('tasks', TaskController::class);
@@ -45,5 +45,7 @@ Route::get('/test-notif', function () {
     \App\Models\Task::sendRecentActivitiesToTelegramGroup();
     return 'Notif dikirim, cek grup dan log.';
 });
+
+
 
 require __DIR__ . '/auth.php';
