@@ -202,12 +202,12 @@
                                     </td>
                                     <td class="py-3 px-4 text-center">
                                         <div class="flex items-center justify-center gap-2">
-                                            <a href="{{ route('tasks.show', $task->id) }}"
+                                            <a href="{{ route('tasks.show', $task->id) }}?from=overdue"
                                                 class="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-200 dark:hover:bg-cyan-800/50 transition-all duration-200"
                                                 title="Lihat Detail">
                                                 <i class="bi bi-eye-fill text-sm"></i>
                                             </a>
-                                            <a href="{{ route('tasks.edit', $task->id) }}"
+                                            <a href="{{ route('tasks.edit', $task->id) }}?from=overdue"
                                                 class="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-all duration-200"
                                                 title="Edit Pekerjaan">
                                                 <i class="bi bi-pencil-square text-sm"></i>
@@ -284,9 +284,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 
     <script>
+        // Fungsi Modal Hapus khusus overdue
         function openDeleteModal(id, name) {
             document.getElementById('deleteTaskName').innerText = name;
-            document.getElementById('deleteForm').action = `/tasks/${id}`;
+            document.getElementById('deleteForm').action = '/tasks/' + id + '?redirect=overdue';
             const modal = document.getElementById('deleteModal');
             const content = document.getElementById('deleteModalContent');
             modal.classList.remove('hidden');

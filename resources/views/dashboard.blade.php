@@ -97,7 +97,7 @@
 
             {{-- Baris 2: Status Progres Pekerjaan (4 kolom) --}}
             {{-- Baris 2: Status Progres Pekerjaan (4 kolom) dengan background warna --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
                 {{-- Pelaporan Belum Diproses (Merah) --}}
                 <div
@@ -180,6 +180,29 @@
                                 </p>
                                 <p class="text-2xl font-bold text-green-900 dark:text-green-100">{{ $completedTasks }}
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Laporan Progress (Ungu) --}}
+                <div
+                    class="overflow-hidden shadow-sm sm:rounded-lg bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-purple-200 dark:bg-purple-800 mr-4">
+                                <svg class="w-6 h-6 text-purple-700 dark:text-purple-300" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-purple-800 dark:text-purple-200 text-sm font-medium">Laporan Progress
+                                </p>
+                                <p class="text-2xl font-bold text-purple-900 dark:text-purple-100">
+                                    {{ $totalProgressReports }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Total laporan perkembangan</p>
                             </div>
                         </div>
                     </div>

@@ -324,7 +324,7 @@
         <div
             class="mt-auto py-6 text-center text-xs text-gray-400 dark:text-gray-500 border-t border-amber-200/30 dark:border-amber-800/20 backdrop-blur-sm">
             <span class="tracking-wider uppercase">{{ config('app.name', 'Spindo') }} &copy; {{ date('Y') }} —
-                Solusi Premium Manajemen Maintenance</span>
+                MAINTENANCE REPORTING MANAGEMENT SYSTEM SPINDO PLANT 7</span>
         </div>
     </div>
 

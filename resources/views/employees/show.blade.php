@@ -141,6 +141,19 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Baris baru untuk Total Laporan Progress -->
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="bg-purple-50 dark:bg-purple-900/30 rounded-xl p-4 col-span-2">
+                        <div class="text-sm text-purple-600 dark:text-purple-300 font-medium">
+                            📊 Total Laporan Progress
+                        </div>
+                        <div class="text-3xl font-bold text-purple-700 dark:text-purple-200 mt-1">
+                            {{ $totalProgressReports }}
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -253,12 +266,9 @@
                                             <option value="finished"
                                                 {{ request('status') == 'finished' ? 'selected' : '' }}>✅ Selesai
                                                 Dikerjakan</option>
-                                            <option value="Completed"
-                                                {{ request('status') == 'Completed' ? 'selected' : '' }}>🎉 Completed
-                                            </option>
-                                            <option value="In Progress"
-                                                {{ request('status') == 'In Progress' ? 'selected' : '' }}>⚡ In
-                                                Progress</option>
+                                            <option value="progress_report"
+                                                {{ request('status') == 'progress_report' ? 'selected' : '' }}>📊
+                                                Laporan Progress</option>
                                         </select>
                                         <button type="submit"
                                             class="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-md transition flex items-center gap-2">
@@ -314,6 +324,7 @@
                                     <th class="py-4 px-4 text-left font-semibold text-sm">Alat/Mesin</th>
                                     <th class="py-4 px-4 text-left font-semibold text-sm">Status</th>
                                     <th class="py-4 px-4 text-left font-semibold text-sm">Deadline</th>
+                                    <th class="py-4 px-4 text-center font-semibold text-sm">Progress</th>
                                     <th class="py-4 px-4 text-center font-semibold text-sm">Laporan</th>
                                     <th class="py-4 px-4 text-center font-semibold text-sm">Aksi</th>
                                 </tr>
@@ -360,20 +371,10 @@
                                                         'color' =>
                                                             'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 border-green-200 dark:border-green-800',
                                                     ],
-                                                    'Completed' => [
-                                                        'label' => 'Completed',
+                                                    'progress_report' => [
+                                                        'label' => 'Laporan Progress',
                                                         'color' =>
-                                                            'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 border-green-200 dark:border-green-800',
-                                                    ],
-                                                    'In Progress' => [
-                                                        'label' => 'In Progress',
-                                                        'color' =>
-                                                            'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 border-blue-200 dark:border-blue-800',
-                                                    ],
-                                                    'belum di proses' => [
-                                                        'label' => 'Belum di Proses',
-                                                        'color' =>
-                                                            'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300 border-gray-300',
+                                                            'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300 border-purple-200 dark:border-purple-800',
                                                     ],
                                                 ];
                                                 $status = $statusMap[$task->status] ?? [
@@ -397,6 +398,20 @@
                                                 </div>
                                             @else
                                                 <span class="text-gray-400 text-sm">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-3 px-4 text-center">
+                                            @php
+                                                $progressCount = $task->reportProgresses->count();
+                                            @endphp
+                                            @if ($progressCount > 0)
+                                                <span
+                                                    class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                                                    <i class="bi bi-bar-chart-steps text-[10px]"></i>
+                                                    {{ $progressCount }} laporan
+                                                </span>
+                                            @else
+                                                <span class="text-gray-400 text-xs">—</span>
                                             @endif
                                         </td>
                                         <td class="py-3 px-4 text-center">
@@ -519,7 +534,7 @@
                             [0, 'asc']
                         ],
                         columnDefs: [{
-                            targets: [4],
+                            targets: [5],
                             orderable: false,
                             searchable: false
                         }],

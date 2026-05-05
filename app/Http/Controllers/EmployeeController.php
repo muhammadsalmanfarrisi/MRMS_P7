@@ -48,14 +48,20 @@ class EmployeeController extends Controller
             $tasksQuery->where('status', $status);
         }
 
-        // Ambil hasil query yang sudah difilter
-        $filteredTasks = $tasksQuery->with('workReports')->get();
+        $filteredTasks = $tasksQuery->with([
+            'workReports',
+            'reportProgresses' => function ($query) use ($employee) {
+                $query->where('employee_id', $employee->id)->latest();
+            }
+        ])->get();
+
+        $totalProgressReports = $employee->reportProgresses()->count();
 
         // Load relasi tasks (jika masih diperlukan untuk keperluan lain)
         // Karena kita sudah punya $filteredTasks, kita bisa tidak load ulang
         // $employee->load('tasks'); // opsional, jika butuh data lengkap untuk bagian lain
 
-        return view('employees.show', compact('employee', 'filteredTasks'));
+        return view('employees.show', compact('employee', 'filteredTasks', 'totalProgressReports'));
     }
 
 

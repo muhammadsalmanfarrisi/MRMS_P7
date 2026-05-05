@@ -31,6 +31,9 @@
             <form action="{{ route('tasks.update', $task->id) }}" method="POST" enctype="multipart/form-data"
                 class="space-y-8">
                 @csrf
+                @if (request()->has('from') && request('from') === 'overdue')
+                    <input type="hidden" name="from" value="overdue">
+                @endif
                 @method('PUT')
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -334,7 +337,7 @@
 
                 <!-- ACTION BUTTONS -->
                 <div class="flex justify-end gap-4 pt-4" data-aos="fade-up" data-aos-delay="400">
-                    <a href="{{ route('tasks.index') }}"
+                    <a href="{{ request('from') === 'overdue' ? route('tasks.overdue') : route('tasks.index') }}"
                         class="group relative overflow-hidden px-8 py-3 rounded-2xl bg-white/30 backdrop-blur-md border border-white/40 text-gray-700 dark:text-gray-200 font-bold transition-all duration-300 hover:bg-white/50 hover:shadow-lg">
                         <span class="relative z-10">Batal</span>
                     </a>

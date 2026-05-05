@@ -14,4 +14,8 @@ class Employee extends Model
     {
         return $this->belongsToMany(Task::class);
     }
+    public function reportProgresses()
+    {
+        return $this->hasMany(ReportProgress::class);
+    }
 }

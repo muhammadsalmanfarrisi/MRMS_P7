@@ -6,6 +6,7 @@ use App\Models\Task;
 use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\View\View;
+use App\Models\ReportProgress;
 
 class DashboardController extends Controller
 {
@@ -32,6 +33,7 @@ class DashboardController extends Controller
             $completedTasks   = Task::where('status', 'finished')->count();
 
             $recentTasks = Task::with('employees')->latest()->take(5)->get();
+            $totalProgressReports = ReportProgress::count();
         } catch (\Exception $e) {
             $totalTasks = 0;
             $totalEmployees = 0;
@@ -41,6 +43,7 @@ class DashboardController extends Controller
             $workedOnTasks = 0;
             $completedTasks = 0;
             $recentTasks = collect();
+            $totalProgressReports = 0;
         }
 
 
@@ -88,6 +91,7 @@ class DashboardController extends Controller
             'inProgressTasks',
             'workedOnTasks',
             'completedTasks',
+            'totalProgressReports',
             'recentTasks',          // jika masih diperlukan di tempat lain
             'recentActivities'      // ← data untuk notifikasi
         ));

@@ -219,6 +219,10 @@ class TaskController extends Controller
             $this->sendTaskAssignmentNotification($task);
         }
 
+        if ($request->from === 'overdue') {
+            return redirect()->route('tasks.overdue')->with('success', 'Tugas berhasil diperbarui.');
+        }
+
         return redirect()->route('tasks.index')->with('success', 'Data pekerjaan berhasil diperbarui.');
     }
     public function show($id)
@@ -228,7 +232,7 @@ class TaskController extends Controller
         return view('tasks.show', compact('task'));
     }
 
-    public function destroy(Task $task)
+    public function destroy(Request $request, Task $task)
     {
         // Hapus file foto/video dari tabel tasks (laporan kerusakan)
         if ($task->photo_url) {
@@ -252,6 +256,10 @@ class TaskController extends Controller
 
         // Hapus task utama
         $task->delete();
+
+        if ($request->redirect === 'overdue') {
+            return redirect()->route('tasks.overdue')->with('success', 'Tugas berhasil dihapus.');
+        }
 
         return redirect()->route('tasks.index')->with('success', 'Data pekerjaan berhasil dihapus.');
     }

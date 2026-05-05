@@ -41,7 +41,7 @@
                             <i class="bi bi-pencil-square text-lg relative z-10"></i>
                             <span class="relative z-10">Edit Pekerjaan</span>
                         </a>
-                        <a href="{{ route('tasks.index') }}"
+                        <a href="{{ request('from') === 'overdue' ? route('tasks.overdue') : route('tasks.index') }}"
                             class="group relative overflow-hidden inline-flex items-center gap-2 px-6 py-3 bg-white/80 backdrop-blur text-gray-700 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300">
                             <i class="bi bi-arrow-left text-lg"></i>
                             <span>Kembali</span>
