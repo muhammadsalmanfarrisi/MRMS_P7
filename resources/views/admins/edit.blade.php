@@ -99,6 +99,7 @@
 
                         <!-- Password -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Password Baru -->
                             <div>
                                 <label for="password"
                                     class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
@@ -109,10 +110,30 @@
                                     </svg>
                                     Password Baru
                                 </label>
-                                <input type="password" name="password" id="password"
-                                    class="w-full px-5 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-800 dark:text-gray-100 shadow-sm transition-all duration-300
-                                           focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400 focus:shadow-lg focus:shadow-amber-500/10 @error('password') ring-2 ring-rose-500 border-rose-500 @enderror"
-                                    placeholder="Minimal 8 karakter">
+                                <div class="relative">
+                                    <input type="password" name="password" id="password"
+                                        class="w-full px-5 py-3.5 pr-12 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-800 dark:text-gray-100 shadow-sm transition-all duration-300
+                       focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400 focus:shadow-lg focus:shadow-amber-500/10 @error('password') ring-2 ring-rose-500 border-rose-500 @enderror"
+                                        placeholder="Minimal 8 karakter">
+                                    <button type="button"
+                                        class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400"
+                                        onclick="togglePasswordVisibility(this)" aria-label="Tampilkan password">
+                                        <!-- Ikon mata tertutup -->
+                                        <svg class="w-5 h-5 icon-eye-off" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.974 9.974 0 012.067-3.472m2.29-1.414A9.958 9.958 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.04 10.04 0 01-4.132 5.411m0 0L21 21M3 3l3.526 3.526" />
+                                        </svg>
+                                        <!-- Ikon mata terbuka -->
+                                        <svg class="w-5 h-5 icon-eye-on hidden" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
                                 <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Kosongkan jika tidak ingin
                                     mengubah password</p>
                                 @error('password')
@@ -125,6 +146,8 @@
                                     </p>
                                 @enderror
                             </div>
+
+                            <!-- Konfirmasi Password -->
                             <div>
                                 <label for="password_confirmation"
                                     class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
@@ -135,10 +158,31 @@
                                     </svg>
                                     Konfirmasi Password
                                 </label>
-                                <input type="password" name="password_confirmation" id="password_confirmation"
-                                    class="w-full px-5 py-3.5 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-800 dark:text-gray-100 shadow-sm transition-all duration-300
-                                           focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400 focus:shadow-lg focus:shadow-amber-500/10"
-                                    placeholder="Ulangi password">
+                                <div class="relative">
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="w-full px-5 py-3.5 pr-12 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-800 dark:text-gray-100 shadow-sm transition-all duration-300
+                       focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400 focus:shadow-lg focus:shadow-amber-500/10"
+                                        placeholder="Ulangi password">
+                                    <button type="button"
+                                        class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-500 hover:text-amber-600 dark:text-gray-400 dark:hover:text-amber-400"
+                                        onclick="togglePasswordVisibility(this)"
+                                        aria-label="Tampilkan konfirmasi password">
+                                        <!-- Ikon mata tertutup -->
+                                        <svg class="w-5 h-5 icon-eye-off" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.974 9.974 0 012.067-3.472m2.29-1.414A9.958 9.958 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.04 10.04 0 01-4.132 5.411m0 0L21 21M3 3l3.526 3.526" />
+                                        </svg>
+                                        <!-- Ikon mata terbuka -->
+                                        <svg class="w-5 h-5 icon-eye-on hidden" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -205,4 +249,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePasswordVisibility(button) {
+            const input = button.parentElement.querySelector('input');
+            const eyeOff = button.querySelector('.icon-eye-off');
+            const eyeOn = button.querySelector('.icon-eye-on');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eyeOff.classList.add('hidden');
+                eyeOn.classList.remove('hidden');
+            } else {
+                input.type = 'password';
+                eyeOff.classList.remove('hidden');
+                eyeOn.classList.add('hidden');
+            }
+        }
+    </script>
 </x-app-layout>
