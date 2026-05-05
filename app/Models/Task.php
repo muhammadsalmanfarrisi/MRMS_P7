@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'reporter_name',
@@ -75,6 +75,12 @@ class Task extends Model
     public function workReports()
     {
         return $this->hasMany(WorkReport::class, 'task_id');
+    }
+
+
+    public function reportProgresses(): HasMany
+    {
+        return $this->hasMany(ReportProgress::class);
     }
 
     // Relasi ke material yang dibutuhkan (jika many-to-many)

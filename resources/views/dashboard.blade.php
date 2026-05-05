@@ -9,7 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             {{-- Baris 1: Statistik Ringkas (3 kolom) --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {{-- Baris 1: Statistik Ringkas (4 kolom) --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
                 {{-- Total Tugas Hari Ini --}}
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
@@ -29,7 +31,7 @@
                     </div>
                 </div>
 
-                {{-- Total Pekerja (pindahan) --}}
+                {{-- Total Pekerja --}}
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <div class="flex items-center">
@@ -48,26 +50,49 @@
                     </div>
                 </div>
 
-                {{-- Mendekati Deadline --}}
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                {{-- Overdue / Terlambat --}}
+                <div
+                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg border-l-4 border-red-500">
                     <div class="p-6">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-red-100 dark:bg-red-900 mr-4">
                                 <svg class="w-6 h-6 text-red-600 dark:text-red-300" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-red-700 dark:text-red-300 text-sm font-medium">⚠️ Terlambat</p>
+                                <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ $overdueTasks }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Deadline lewat & belum selesai
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Mendekati Deadline --}}
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-amber-100 dark:bg-amber-900 mr-4">
+                                <svg class="w-6 h-6 text-amber-600 dark:text-amber-300" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <div>
                                 <p class="text-gray-500 dark:text-gray-400 text-sm">Mendekati Deadline</p>
-                                <p class="text-gray-500 dark:text-gray-400 text-sm">(3 hari lagi)</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                <p class="text-xs text-gray-400 dark:text-gray-500">(3 hari ke depan)</p>
+                                <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">
                                     {{ $approachingDeadline }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             {{-- Baris 2: Status Progres Pekerjaan (4 kolom) --}}
@@ -151,7 +176,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-green-800 dark:text-green-200 text-sm font-medium">Selesai Dikerjakan</p>
+                                <p class="text-green-800 dark:text-green-200 text-sm font-medium">Selesai Dikerjakan
+                                </p>
                                 <p class="text-2xl font-bold text-green-900 dark:text-green-100">{{ $completedTasks }}
                                 </p>
                             </div>

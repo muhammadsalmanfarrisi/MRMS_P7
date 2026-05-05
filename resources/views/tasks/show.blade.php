@@ -398,5 +398,228 @@
                 </div>
             </div>
         @endif
+
+        {{-- ==================== LAPORAN PROGRESS MEWAH ==================== --}}
+        @php
+            $progressReports = $task
+                ->reportProgresses()
+                ->with(['employee', 'instructionsDone'])
+                ->latest()
+                ->get();
+        @endphp
+
+        @if ($progressReports->count() > 0)
+            <div class="relative mt-8" data-aos="fade-up" data-aos-duration="1000">
+                {{-- Header Utama --}}
+                <div class="flex items-center gap-3 mb-6">
+                    <div
+                        class="p-3 bg-gradient-to-br from-violet-400 to-purple-600 rounded-2xl shadow-lg shadow-purple-500/20">
+                        <i class="bi bi-bar-chart-steps text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3
+                            class="text-2xl font-black bg-gradient-to-r from-violet-700 to-purple-700 dark:from-violet-300 dark:to-purple-300 bg-clip-text text-transparent">
+                            LAPORAN PROGRESS
+                        </h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                            <i class="bi bi-collection"></i> {{ $progressReports->count() }} laporan perkembangan
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    @foreach ($progressReports as $index => $report)
+                        <div class="relative group/card">
+                            {{-- Efek Glow Background --}}
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 rounded-3xl blur-xl opacity-20 group-hover/card:opacity-40 transition-all duration-500">
+                            </div>
+
+                            <div
+                                class="relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-2xl rounded-3xl border border-white/30 dark:border-white/10 shadow-2xl overflow-hidden">
+                                {{-- Header Progress --}}
+                                <div
+                                    class="px-8 py-5 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-rose-500/10 border-b border-white/30 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <span
+                                            class="flex items-center justify-center w-8 h-8 rounded-full bg-white dark:bg-gray-800 text-purple-600 font-bold text-sm shadow">
+                                            {{ $index + 1 }}
+                                        </span>
+                                        <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                                            <i class="bi bi-calendar-check"></i>
+                                            {{ $report->created_at->translatedFormat('d M Y, H:i') }}
+                                        </p>
+                                        @if ($report->employee)
+                                            <span
+                                                class="inline-flex items-center gap-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-800 dark:text-indigo-300 text-xs px-3 py-1 rounded-full">
+                                                <i class="bi bi-person-circle"></i> {{ $report->employee->name }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 bg-purple-50 dark:bg-purple-900/30 rounded-full text-xs font-bold text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700">
+                                        <i class="bi bi-arrow-repeat mr-1"></i> Update #{{ $index + 1 }}
+                                    </span>
+                                </div>
+
+                                {{-- Konten Utama: Progress Bar, Foto, Video, Detail --}}
+                                <div class="p-6 md:p-8 space-y-6">
+                                    {{-- Progress Bar & Persentase --}}
+                                    @if (!is_null($report->progress_percent))
+                                        <div
+                                            class="bg-gray-100 dark:bg-gray-800 rounded-full h-6 overflow-hidden shadow-inner">
+                                            <div class="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 rounded-full transition-all duration-1000 flex items-center justify-end pr-2"
+                                                style="width: {{ $report->progress_percent }}%">
+                                                <span
+                                                    class="text-white text-xs font-bold drop-shadow">{{ $report->progress_percent }}%</span>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    {{-- Grid Foto & Video --}}
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                        {{-- Foto --}}
+                                        <div
+                                            class="group relative bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700/50 p-5 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 hover:border-purple-200 dark:hover:border-purple-600/30">
+                                            <div
+                                                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-pink-500 rounded-t-2xl scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left">
+                                            </div>
+                                            <h4
+                                                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
+                                                <i class="bi bi-camera-fill text-purple-500"></i> 📸 Foto Progress
+                                            </h4>
+                                            <div class="flex justify-center">
+                                                @if ($report->photo_path)
+                                                    <a href="{{ asset('storage/' . $report->photo_path) }}"
+                                                        target="_blank" class="block relative">
+                                                        <img src="{{ asset('storage/' . $report->photo_path) }}"
+                                                            alt="Foto Progress"
+                                                            class="max-h-64 rounded-xl shadow-xl group-hover:scale-105 transition-transform duration-500">
+                                                        <div
+                                                            class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <span
+                                                                class="px-4 py-2 bg-white/20 backdrop-blur-md rounded-full text-white font-bold text-sm">
+                                                                <i class="bi bi-arrows-fullscreen"></i> Lihat Penuh
+                                                            </span>
+                                                        </div>
+                                                    </a>
+                                                @else
+                                                    <div
+                                                        class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                                                        <i
+                                                            class="bi bi-image-alt text-5xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                                                        <p class="text-sm font-medium italic">Tidak ada foto</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        {{-- Video --}}
+                                        <div
+                                            class="group relative bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700/50 p-5 transition-all duration-500 hover:shadow-2xl hover:shadow-pink-500/10 hover:border-pink-200 dark:hover:border-pink-600/30">
+                                            <div
+                                                class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-400 to-rose-500 rounded-t-2xl scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left">
+                                            </div>
+                                            <h4
+                                                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
+                                                <i class="bi bi-play-circle-fill text-pink-500"></i> 🎥 Video Progress
+                                            </h4>
+                                            <div class="flex justify-center">
+                                                @if ($report->video_path)
+                                                    <div class="relative group/video w-full">
+                                                        <video controls
+                                                            class="w-full max-h-64 rounded-xl shadow-xl group-hover:scale-105 transition-transform duration-500">
+                                                            <source
+                                                                src="{{ asset('storage/' . $report->video_path) }}"
+                                                                type="video/mp4">
+                                                            Browser Anda tidak mendukung.
+                                                        </video>
+                                                        <a href="{{ asset('storage/' . $report->video_path) }}"
+                                                            target="_blank"
+                                                            class="absolute top-3 right-3 px-3 py-1.5 bg-white/30 backdrop-blur-md rounded-lg text-white text-xs font-bold opacity-0 group-hover/video:opacity-100 transition-opacity">
+                                                            <i class="bi bi-box-arrow-up-right"></i> Buka
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    <div
+                                                        class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                                                        <i
+                                                            class="bi bi-film text-5xl text-gray-300 dark:text-gray-600 mb-2"></i>
+                                                        <p class="text-sm font-medium italic">Tidak ada video</p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Deskripsi & Kendala --}}
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div
+                                            class="relative bg-white/80 dark:bg-gray-900/80 rounded-2xl p-5 border border-white/30 dark:border-white/10 shadow-lg">
+                                            <div class="flex items-center gap-2 mb-3">
+                                                <div class="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                                                    <i class="bi bi-card-text text-blue-600"></i>
+                                                </div>
+                                                <h5 class="font-bold text-gray-700 dark:text-gray-300 text-sm">
+                                                    Deskripsi Progress</h5>
+                                            </div>
+                                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                                                {{ $report->description ?? 'Tidak ada deskripsi.' }}
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="relative bg-white/80 dark:bg-gray-900/80 rounded-2xl p-5 border border-white/30 dark:border-white/10 shadow-lg">
+                                            <div class="flex items-center gap-2 mb-3">
+                                                <div class="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                                                    <i class="bi bi-exclamation-triangle-fill text-amber-600"></i>
+                                                </div>
+                                                <h5 class="font-bold text-gray-700 dark:text-gray-300 text-sm">Kendala
+                                                    / Hambatan</h5>
+                                            </div>
+                                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+                                                {{ $report->obstacles ?? 'Tidak ada kendala.' }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {{-- Instruksi yang Sudah / Belum Selesai --}}
+                                    @if ($report->instructionsDone->count() > 0)
+                                        <div
+                                            class="bg-gradient-to-br from-gray-50 to-purple-50/50 dark:from-gray-800/50 dark:to-purple-900/10 rounded-2xl border border-gray-200 dark:border-gray-700/50 p-6">
+                                            <h4
+                                                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-2">
+                                                <i class="bi bi-list-check text-purple-600"></i> Status Instruksi
+                                                Pengerjaan
+                                            </h4>
+                                            <div class="space-y-2">
+                                                @foreach ($report->instructionsDone as $instruction)
+                                                    <div
+                                                        class="flex items-center justify-between bg-white/80 dark:bg-gray-900/80 p-3 rounded-xl border border-white/30 dark:border-white/10">
+                                                        <span class="text-sm text-gray-700 dark:text-gray-300">
+                                                            {{ $instruction->step ?? 'Instruksi #' . $instruction->instruction_id }}
+                                                        </span>
+                                                        @if ($instruction->is_done)
+                                                            <span
+                                                                class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-bold rounded-full flex items-center gap-1">
+                                                                <i class="bi bi-check-circle"></i> Selesai
+                                                            </span>
+                                                        @else
+                                                            <span
+                                                                class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 text-xs font-bold rounded-full flex items-center gap-1">
+                                                                <i class="bi bi-x-circle"></i> Belum
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
     </div>
 </x-app-layout>

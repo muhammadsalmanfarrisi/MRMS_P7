@@ -158,15 +158,41 @@ class TaskController extends Controller
 
         // 2. Update Detailed Instructions (One-to-Many)
         // Hapus instruksi lama, lalu masukkan yang baru dari form
-        $task->detail_instructions()->delete();
-        if ($request->has('steps')) {
-            foreach ($request->steps as $index => $step) {
-                if (!empty($step)) {
-                    $task->detail_instructions()->create([
-                        'instruction_step' => $step,
-                        'order' => $index + 1
-                    ]);
-                }
+        // ========== Sinkronisasi Detail Instructions (berdasarkan ID) ==========
+        $inputSteps = $request->input('steps', []);
+        $inputIds   = $request->input('instruction_ids', []); // dari hidden input
+
+        // Hapus instruksi yang TIDAK ADA di array instruction_ids yang dikirim
+        // Pastikan hanya ID valid (tidak kosong) yang dianggap
+        $existingIds = $task->detail_instructions()->pluck('id')->toArray();
+        $receivedIds = array_filter($inputIds, function ($id) {
+            return !empty($id);
+        });
+
+        $idsToDelete = array_diff($existingIds, $receivedIds);
+        if (!empty($idsToDelete)) {
+            $task->detail_instructions()->whereIn('id', $idsToDelete)->delete();
+        }
+
+        // Loop steps untuk update atau create
+        foreach ($inputSteps as $index => $stepText) {
+            if (empty($stepText)) continue; // lewati yang kosong
+
+            $order = $index + 1;
+            $instructionId = $inputIds[$index] ?? null;
+
+            if (!empty($instructionId)) {
+                // Update instruksi yang sudah ada, jangan sentuh is_done
+                $task->detail_instructions()->where('id', $instructionId)->update([
+                    'instruction_step' => $stepText,
+                    'order' => $order,
+                ]);
+            } else {
+                // Buat instruksi baru (is_done default false)
+                $task->detail_instructions()->create([
+                    'instruction_step' => $stepText,
+                    'order' => $order,
+                ]);
             }
         }
 
@@ -343,11 +369,26 @@ class TaskController extends Controller
             $message .= "📋 *Instruksi:* {$task->instructions}\n";
         }
         if ($task->detail_instructions && $task->detail_instructions->count() > 0) {
+            // Ambil status instruksi terbaru dari laporan progress terakhir
+            $latestProgress = $task->reportProgresses()->latest()->first();
+            $instructionStatuses = collect();
+            if ($latestProgress) {
+                $instructionStatuses = $latestProgress->instructionsDone->keyBy('instruction_id');
+            }
+
             $message .= "\n📋 *Hal yang Perlu Dikerjakan:*\n";
             foreach ($task->detail_instructions as $index => $step) {
-
                 $stepNumber = $index + 1;
-                $message .= "{$stepNumber}. {$step->instruction_step}\n";
+                $status = $instructionStatuses->get($step->id);
+                $done = $status->is_done ?? null;
+
+                // Tentukan simbol status
+                $icon = '';
+                if (!is_null($done)) {
+                    $icon = $done ? ' ✅' : ' ❌';
+                }
+
+                $message .= "{$stepNumber}. {$step->instruction_step}{$icon}\n";
             }
         }
 

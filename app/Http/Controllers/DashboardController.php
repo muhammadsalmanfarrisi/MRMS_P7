@@ -12,10 +12,16 @@ class DashboardController extends Controller
     public function index(): View
     {
         try {
+            $now = Carbon::now('Asia/Jakarta');
             // Statistik utama
             $totalTasks = Task::whereDate('deadline', Carbon::now('Asia/Jakarta')->toDateString())->count();
             $totalEmployees = Employee::count();
             $approachingDeadline = Task::whereDate('deadline', '<=', Carbon::now()->addDays(3))
+                ->where('status', '!=', 'finished')
+                ->count();
+
+            // ✅ BARU: Tugas yang deadline-nya sudah lewat dan belum selesai
+            $overdueTasks = Task::where('deadline', '<', $now->startOfDay())
                 ->where('status', '!=', 'finished')
                 ->count();
 
@@ -77,6 +83,7 @@ class DashboardController extends Controller
             'totalTasks',
             'totalEmployees',
             'approachingDeadline',
+            'overdueTasks',
             'unprocessedTasks',
             'inProgressTasks',
             'workedOnTasks',
