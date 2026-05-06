@@ -1,0 +1,109 @@
+version: "3.8"
+
+services:
+    # Aplikasi Laravel (PHP-FPM)
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: mrms_sp7:latest
+        container_name: mrms_app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - app_storage:/var/www/html/storage
+            - ./.env:/var/www/html/.env:ro # environment hanya dibaca
+        networks:
+            - mrms_net
+        depends_on:
+            - db
+        environment:
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
+            # (Variabel environment lain sudah dibaca dari .env via file mount, jika perlu tambahkan di sini)
+
+    # Web server Nginx
+    webserver:
+        image: nginx:stable-alpine
+        container_name: mrms_nginx
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            # - "443:443"   # Aktifkan jika sudah punya SSL
+        volumes:
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+            - app_storage:/var/www/html/storage:ro # hanya baca, untuk file public
+            - .:/var/www/html:ro # mount source code hanya baca
+        networks:
+            - mrms_net
+        depends_on:
+            - app
+
+    # PostgreSQL 17
+    db:
+        image: postgres:17-alpine
+        container_name: mrms_db
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_DATABASE}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        networks:
+            - mrms_net
+        ports:
+            - "127.0.0.1:5432:5432" # opsional, hanya untuk akses lokal
+
+    # Queue worker (database driver)
+    queue:
+        image: mrms_sp7:latest
+        container_name: mrms_queue
+        restart: unless-stopped
+        command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+        volumes:
+            - app_storage:/var/www/html/storage
+            - ./.env:/var/www/html/.env:ro
+        networks:
+            - mrms_net
+        depends_on:
+            - app
+            - db
+        environment:
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
+
+    # Laravel scheduler (setiap menit)
+    scheduler:
+        image: mrms_sp7:latest
+        container_name: mrms_scheduler
+        restart: unless-stopped
+        command: /bin/sh -c "while true; do php artisan schedule:run --verbose --no-interaction & sleep 60; done"
+        volumes:
+            - app_storage:/var/www/html/storage
+            - ./.env:/var/www/html/.env:ro
+        networks:
+            - mrms_net
+        depends_on:
+            - app
+            - db
+        environment:
+            - DB_HOST=db
+            - DB_PORT=5432
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
+
+volumes:
+    app_storage:
+    db_data:
+
+networks:
+    mrms_net:
+        driver: bridge
