@@ -215,9 +215,7 @@ class TaskController extends Controller
             $this->sendTelegramNotification($task);
         }
 
-        if ($oldStatus != $newStatus && $newStatus == 'processed') {
-            $this->sendTaskAssignmentNotification($task);
-        }
+        $this->sendTaskAssignmentNotification($task);
 
         if ($request->from === 'overdue') {
             return redirect()->route('tasks.overdue')->with('success', 'Tugas berhasil diperbarui.');
@@ -277,9 +275,7 @@ class TaskController extends Controller
         $task->save();
 
         // Kirim notifikasi jika status berubah
-        if ($oldStatus != $newStatus) {
-            $this->sendTelegramNotification($task);
-        }
+        $this->sendTelegramNotification($task);
 
         return back()->with('success', 'Status berhasil diupdate');
     }
